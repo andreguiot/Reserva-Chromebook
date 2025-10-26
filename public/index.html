@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - La Salle Abel</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="https://lasalle.edu.br/public/uploads/images/abel/5af5fc44d4812(BRANCA-HORIZONTAL)_Abel.png" alt="Colégio La Salle Abel" class="logo-img">
+            <p>Sistema de Reservas</p>
+        </div>
+        <nav class="top-menu">
+            <button class="tab-btn active" onclick="mudarAba('reservas')">Validar Reservas</button>
+            <button class="tab-btn" onclick="mudarAba('dispositivos')">Cadastrar Dispositivos</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        
+        <!-- ABA: VALIDAR RESERVAS -->
+        <section id="aba-reservas" class="aba-content active">
+            <h2>Validação de Reservas</h2>
+            <div class="form-card">
+                <p>Escaneie ou digite o código de patrimônio para validar a reserva e registrar a retirada ou devolução.</p>
+                <div class="scan-group">
+                    <input type="text" id="scan-patrimonio" placeholder="Código de Patrimônio" autofocus>
+                    <button class="btn-yellow">Validar</button>
+                </div>
+            </div>
+
+            <h2>Reservas Ativas</h2>
+            <ul id="lista-reservas" class="lista-itens">
+                <li><span>(Nenhuma reserva ativa no momento)</span></li>
+            </ul>
+        </section>
+
+        <!-- ABA: CADASTRAR DISPOSITIVOS -->
+        <section id="aba-dispositivos" class="aba-content" style="display: none;">
+            <div class="grid-2">
+                <!-- Seção Carrinhos -->
+                <div class="panel">
+                    <h2>Cadastrar Carrinho</h2>
+                    <form id="form-carrinho" class="form-card">
+                        <input type="text" id="desc-carrinho" placeholder="Descrição (Ex: Carrinho A)" required>
+                        <input type="number" id="cap-carrinho" placeholder="Capacidade Total" required>
+                        <button type="submit" class="btn-yellow">Adicionar Carrinho</button>
+                    </form>
+                    <ul id="lista-carrinhos" class="lista-itens"></ul>
+                </div>
+
+                <!-- Seção Chromebooks -->
+                <div class="panel">
+                    <h2>Cadastrar Chromebook</h2>
+                    <form id="form-chromebook" class="form-card">
+                        <input type="text" id="serie-chromebook" placeholder="Número de Série" required>
+                        <input type="text" id="patrimonio-chromebook" placeholder="Nº Patrimônio" required>
+                        <select id="select-carrinho" required>
+                            <option value="">Selecione o Carrinho</option>
+                        </select>
+                        <button type="submit" class="btn-yellow">Adicionar Chromebook</button>
+                    </form>
+                    <ul id="lista-chromebooks" class="lista-itens"></ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
