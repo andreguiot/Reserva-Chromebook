@@ -24,9 +24,10 @@ app.get('/', (req, res) => {
 
 sequelize.sync({ alter: true }).then(() => {
     console.log('Banco de dados sincronizado');
-    app.listen(port, () => {
-        console.log(`Servidor rodando na porta ${port}`);
-    });
 }).catch(err => {
-    console.error('Erro ao sincronizar banco de dados:', err);
+    console.error('Erro ao sincronizar banco de dados:', err.message);
+});
+
+app.listen(port, () => {
+    console.log(`Servidor rodando na porta ${port}`);
 });
