@@ -14,6 +14,10 @@ const Carrinho = sequelize.define('Carrinho', {
     capacidade_total: {
         type: DataTypes.INTEGER,
         allowNull: false
+    },
+    id_patrimonio: {
+        type: DataTypes.STRING,
+        allowNull: true
     }
 }, {
     tableName: 'carrinhos',
