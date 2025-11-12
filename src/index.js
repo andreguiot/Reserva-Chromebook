@@ -14,9 +14,11 @@ app.use(express.static('public'));
 const { sequelize } = require('./models');
 const carrinhoRoutes = require('./routes/carrinhoRoutes');
 const chromebookRoutes = require('./routes/chromebookRoutes');
+const reservaRoutes = require('./routes/reservaRoutes');
 
 app.use('/api/carrinhos', carrinhoRoutes);
 app.use('/api/chromebooks', chromebookRoutes);
+app.use('/api/reservas', reservaRoutes);
 
 app.get('/', (req, res) => {
     res.send('Servidor do Sistema de Reservas de Chromebooks rodando!');
