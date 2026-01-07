@@ -3,7 +3,7 @@ const API_URL = '/api';
 function mudarAba(abaId) {
     document.querySelectorAll('.aba-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-    
+
     document.getElementById('aba-' + abaId).style.display = 'block';
     event.currentTarget.classList.add('active');
 }
@@ -11,10 +11,10 @@ function mudarAba(abaId) {
 async function carregarCarrinhos() {
     const res = await fetch(`${API_URL}/carrinhos`);
     const carrinhos = await res.json();
-    
+
     const lista = document.getElementById('lista-carrinhos');
     const select = document.getElementById('select-carrinho');
-    
+
     lista.innerHTML = '';
     select.innerHTML = '<option value="">Selecione o Carrinho</option>';
 
@@ -36,7 +36,7 @@ async function carregarCarrinhos() {
 async function carregarChromebooks() {
     const res = await fetch(`${API_URL}/chromebooks`);
     const chromebooks = await res.json();
-    
+
     const lista = document.getElementById('lista-chromebooks');
     lista.innerHTML = '';
 
@@ -82,18 +82,115 @@ document.getElementById('form-chromebook').addEventListener('submit', async (e) 
 });
 
 async function deletarCarrinho(id) {
-    if(confirm('Deletar este carrinho?')) {
+    if (confirm('Deletar este carrinho?')) {
         await fetch(`${API_URL}/carrinhos/${id}`, { method: 'DELETE' });
         carregarCarrinhos();
     }
 }
 
 async function deletarChromebook(id) {
-    if(confirm('Deletar este chromebook?')) {
+    if (confirm('Deletar este chromebook?')) {
         await fetch(`${API_URL}/chromebooks/${id}`, { method: 'DELETE' });
         carregarChromebooks();
     }
 }
 
+let reservaSelecionadaId = null;
+let reservaSelecionadaTipo = null;
+
+async function carregarReservas() {
+    const res = await fetch(`${API_URL}/reservas`);
+    const reservas = await res.json();
+
+    const lista = document.getElementById('lista-reservas');
+    lista.innerHTML = '';
+
+    if (reservas.length === 0) {
+        lista.innerHTML = '<li><span>(Nenhuma reserva ativa no momento)</span></li>';
+        return;
+    }
+
+    reservas.forEach(r => {
+        const li = document.createElement('li');
+        li.classList.add('reserva-item');
+        const carrinho = r.Carrinho ? r.Carrinho.descricao : 'Individual';
+        const status = r.status === 'pendente' ? '🟡 Pendente' : '🟢 Ativa';
+        const tipo = r.tipo_reserva === 'carrinho' ? '🛒 Carrinho' : '💻 Individual';
+        li.innerHTML = `
+            <div class="reserva-info">
+                <strong>${r.nome_professor}</strong>
+                <span>Sala: ${r.sala} | ${carrinho} | ${r.data_reserva}</span>
+                <span>${r.horario_inicio} – ${r.horario_fim} | ${tipo}</span>
+            </div>
+            <span class="badge-status">${status}</span>
+        `;
+        li.addEventListener('click', () => selecionarReserva(li, r));
+        lista.appendChild(li);
+    });
+}
+
+function selecionarReserva(li, reserva) {
+    document.querySelectorAll('.reserva-item').forEach(el => el.classList.remove('selecionada'));
+    li.classList.add('selecionada');
+
+    reservaSelecionadaId = reserva.id_reserva;
+    reservaSelecionadaTipo = reserva.tipo_reserva;
+
+    const input = document.getElementById('scan-patrimonio');
+    if (reserva.tipo_reserva === 'carrinho') {
+        input.placeholder = 'Digite o patrimônio do carrinho';
+    } else {
+        input.placeholder = 'Escaneie o patrimônio do Chromebook';
+    }
+    input.value = '';
+    input.focus();
+}
+
+async function validarReserva() {
+    if (!reservaSelecionadaId) {
+        alert('Selecione uma reserva na lista primeiro.');
+        return;
+    }
+
+    const id_patrimonio = document.getElementById('scan-patrimonio').value.trim();
+    if (!id_patrimonio) {
+        alert('Digite ou escaneie o código de patrimônio.');
+        return;
+    }
+
+    const endpoint = reservaSelecionadaTipo === 'carrinho'
+        ? `${API_URL}/reservas/${reservaSelecionadaId}/validar`
+        : `${API_URL}/reservas/${reservaSelecionadaId}/escanear`;
+
+    const method = reservaSelecionadaTipo === 'carrinho' ? 'PUT' : 'POST';
+
+
+    const res = await fetch(endpoint, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id_patrimonio })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+        alert(`Erro: ${data.erro}`);
+        return;
+    }
+
+    if (data.alerta) {
+        alert('⚠️ Atenção: Chromebook registrado como DESLOCADO (não pertence ao carrinho de origem desta reserva).');
+    } else {
+        alert('✅ Validado com sucesso!');
+    }
+
+    document.getElementById('scan-patrimonio').value = '';
+    reservaSelecionadaId = null;
+    reservaSelecionadaTipo = null;
+    carregarReservas();
+}
+
 carregarCarrinhos();
 carregarChromebooks();
+carregarReservas();
+
