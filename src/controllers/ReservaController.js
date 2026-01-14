@@ -60,7 +60,8 @@ class ReservaController {
                 data_confirmacao: new Date()
             });
 
-            if (reserva.status === 'pendente') {
+            const totalEscaneados = await ReservaChromebook.count({ where: { id_reserva: reserva.id_reserva } });
+            if (reserva.status === 'pendente' && totalEscaneados >= reserva.quantidade_chromebooks) {
                 await reserva.update({ status: 'ativa' });
             }
 
@@ -69,6 +70,38 @@ class ReservaController {
             return res.status(500).json({ erro: 'Erro ao escanear chromebook' });
         }
     }
+
+    async validar(req, res) {
+        try {
+            const { id } = req.params;
+            const { id_patrimonio } = req.body;
+
+            const reserva = await Reserva.findByPk(id, {
+                include: [{ model: Carrinho }]
+            });
+            if (!reserva) return res.status(404).json({ erro: 'Reserva não encontrada' });
+
+            if (reserva.tipo_reserva === 'carrinho') {
+                const carrinho = reserva.Carrinho;
+                if (!carrinho) return res.status(400).json({ erro: 'Carrinho não associado à reserva' });
+
+                const patrimonioRecebido = String(id_patrimonio).trim();
+                const patrimonioBanco = String(carrinho.id_patrimonio).trim();
+
+                if (patrimonioBanco !== patrimonioRecebido) {
+                    return res.status(400).json({ erro: `Patrimônio incorreto. Esperado: ${patrimonioBanco}` });
+                }
+
+                await reserva.update({ status: 'ativa' });
+                return res.json({ mensagem: 'Carrinho validado com sucesso', reserva });
+            }
+
+            return res.status(400).json({ erro: 'Use o endpoint de escanear para reservas individuais' });
+        } catch (error) {
+            return res.status(500).json({ erro: 'Erro ao validar reserva' });
+        }
+    }
+
 
     async encerrar(req, res) {
         try {
