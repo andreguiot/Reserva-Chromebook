@@ -47,9 +47,15 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 
     if (res.ok) {
         document.getElementById('form-reserva').reset();
+        document.getElementById('data_reserva').min = new Date().toISOString().split('T')[0];
         document.getElementById('msg-sucesso').style.display = 'block';
         setTimeout(() => document.getElementById('msg-sucesso').style.display = 'none', 5000);
+    } else {
+        const data = await res.json();
+        alert(`Erro: ${data.erro}`);
     }
 });
 
 carregarCarrinhosDisponiveis();
+
+document.getElementById('data_reserva').min = new Date().toISOString().split('T')[0];
