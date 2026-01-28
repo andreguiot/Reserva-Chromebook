@@ -114,15 +114,27 @@ async function carregarReservas() {
         const li = document.createElement('li');
         li.classList.add('reserva-item');
         const carrinho = r.Carrinho ? r.Carrinho.descricao : 'Individual';
-        const status = r.status === 'pendente' ? '🟡 Pendente' : '🟢 Ativa';
         const tipo = r.tipo_reserva === 'carrinho' ? '🛒 Carrinho' : '💻 Individual';
+
+        let statusBadge;
+        if (r.status === 'pendente') statusBadge = '🟡 Pendente';
+        else if (r.status === 'ativa') statusBadge = '🟢 Ativa';
+        else statusBadge = '🔴 Atrasada';
+
+        const btnDevolucao = (r.status === 'ativa' || r.status === 'atrasada')
+            ? `<button class="btn-dev" onclick="encerrarReserva(${r.id_reserva}, event)">Registrar Devolução</button>`
+            : '';
+
         li.innerHTML = `
             <div class="reserva-info">
                 <strong>${r.nome_professor}</strong>
                 <span>Sala: ${r.sala} | ${carrinho} | ${r.data_reserva}</span>
                 <span>${r.horario_inicio} – ${r.horario_fim} | ${tipo}</span>
             </div>
-            <span class="badge-status">${status}</span>
+            <div class="reserva-acoes">
+                <span class="badge-status">${statusBadge}</span>
+                ${btnDevolucao}
+            </div>
         `;
         li.addEventListener('click', () => selecionarReserva(li, r));
         lista.appendChild(li);
@@ -188,6 +200,19 @@ async function validarReserva() {
     reservaSelecionadaId = null;
     reservaSelecionadaTipo = null;
     carregarReservas();
+}
+
+async function encerrarReserva(id, event) {
+    event.stopPropagation();
+    if (!confirm('Confirmar devolução desta reserva?')) return;
+
+    const res = await fetch(`${API_URL}/reservas/${id}/encerrar`, { method: 'PUT' });
+    if (res.ok) {
+        carregarReservas();
+    } else {
+        const data = await res.json();
+        alert(`Erro: ${data.erro}`);
+    }
 }
 
 carregarCarrinhos();
