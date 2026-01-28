@@ -18,6 +18,29 @@ class ReservaController {
     async criar(req, res) {
         try {
             const { tipo_reserva, id_carrinho, quantidade_chromebooks, sala, nome_professor, data_reserva, horario_inicio, horario_fim } = req.body;
+
+            const hoje = new Date();
+            hoje.setHours(0, 0, 0, 0);
+            const dataReserva = new Date(data_reserva + 'T00:00:00');
+            if (dataReserva < hoje) {
+                return res.status(400).json({ erro: 'Não é possível realizar reservas para datas passadas.' });
+            }
+
+            if (tipo_reserva === 'carrinho' && id_carrinho) {
+                const conflito = await Reserva.findOne({
+                    where: {
+                        id_carrinho,
+                        data_reserva,
+                        status: { [Op.in]: ['pendente', 'ativa'] },
+                        horario_inicio: { [Op.lt]: horario_fim },
+                        horario_fim: { [Op.gt]: horario_inicio }
+                    }
+                });
+                if (conflito) {
+                    return res.status(409).json({ erro: `Conflito de horário: este carrinho já está reservado das ${conflito.horario_inicio} às ${conflito.horario_fim}.` });
+                }
+            }
+
             const novaReserva = await Reserva.create({
                 tipo_reserva, id_carrinho, quantidade_chromebooks,
                 sala, nome_professor, data_reserva, horario_inicio, horario_fim,
