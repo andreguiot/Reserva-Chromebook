@@ -1,11 +1,34 @@
 const { Reserva, ReservaChromebook, Chromebook, Carrinho } = require('../models');
 const { Op } = require('sequelize');
 
+async function verificarAtrasadas() {
+    const agora = new Date();
+    const hojeStr = agora.toISOString().split('T')[0];
+    const horaStr = agora.toTimeString().slice(0, 8);
+
+    await Reserva.update(
+        { status: 'atrasada' },
+        {
+            where: {
+                status: 'ativa',
+                [Op.or]: [
+                    { data_reserva: { [Op.lt]: hojeStr } },
+                    {
+                        data_reserva: hojeStr,
+                        horario_fim: { [Op.lt]: horaStr }
+                    }
+                ]
+            }
+        }
+    );
+}
+
 class ReservaController {
     async listar(req, res) {
         try {
+            await verificarAtrasadas();
             const reservas = await Reserva.findAll({
-                where: { status: { [Op.in]: ['pendente', 'ativa'] } },
+                where: { status: { [Op.in]: ['pendente', 'ativa', 'atrasada'] } },
                 include: [{ model: Carrinho, attributes: ['descricao'] }],
                 order: [['data_reserva', 'ASC']]
             });
@@ -14,6 +37,7 @@ class ReservaController {
             return res.status(500).json({ erro: 'Erro ao listar reservas' });
         }
     }
+
 
     async criar(req, res) {
         try {

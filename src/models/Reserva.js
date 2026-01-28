@@ -40,7 +40,7 @@ const Reserva = sequelize.define('Reserva', {
         allowNull: false
     },
     status: {
-        type: DataTypes.ENUM('pendente', 'ativa', 'encerrada'),
+        type: DataTypes.ENUM('pendente', 'ativa', 'atrasada', 'encerrada'),
         defaultValue: 'pendente'
     }
 }, {
