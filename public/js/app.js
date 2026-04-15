@@ -98,15 +98,19 @@ async function deletarChromebook(id) {
 let reservaSelecionadaId = null;
 let reservaSelecionadaTipo = null;
 
-async function carregarReservas() {
-    const res = await fetch(`${API_URL}/reservas`);
+async function carregarReservas(status = '', data = '') {
+    let url = `${API_URL}/reservas?`;
+    if (status) url += `status=${status}&`;
+    if (data) url += `data=${data}`;
+
+    const res = await fetch(url);
     const reservas = await res.json();
 
     const lista = document.getElementById('lista-reservas');
     lista.innerHTML = '';
 
     if (reservas.length === 0) {
-        lista.innerHTML = '<li><span>(Nenhuma reserva ativa no momento)</span></li>';
+        lista.innerHTML = '<li><span>(Nenhuma reserva encontrada)</span></li>';
         return;
     }
 
@@ -199,7 +203,7 @@ async function validarReserva() {
     document.getElementById('scan-patrimonio').value = '';
     reservaSelecionadaId = null;
     reservaSelecionadaTipo = null;
-    carregarReservas();
+    aplicarFiltros();
 }
 
 async function encerrarReserva(id, event) {
@@ -208,11 +212,23 @@ async function encerrarReserva(id, event) {
 
     const res = await fetch(`${API_URL}/reservas/${id}/encerrar`, { method: 'PUT' });
     if (res.ok) {
-        carregarReservas();
+        aplicarFiltros();
     } else {
         const data = await res.json();
         alert(`Erro: ${data.erro}`);
     }
+}
+
+function aplicarFiltros() {
+    const status = document.getElementById('filtro-status').value;
+    const data = document.getElementById('filtro-data').value;
+    carregarReservas(status, data);
+}
+
+function limparFiltros() {
+    document.getElementById('filtro-status').value = '';
+    document.getElementById('filtro-data').value = '';
+    carregarReservas();
 }
 
 carregarCarrinhos();

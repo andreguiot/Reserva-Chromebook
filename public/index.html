@@ -36,9 +36,23 @@
                 <small class="scan-hint">Clique em uma reserva para selecioná-la, depois insira o patrimônio.</small>
             </div>
 
-            <h2>Reservas Ativas</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 16px;">
+                <h2 style="margin: 0;">Lista de Reservas</h2>
+                <div class="filtros-reservas" style="display: flex; gap: 8px;">
+                    <select id="filtro-status" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
+                        <option value="">Ativas/Pendentes/Atrasadas (Padrão)</option>
+                        <option value="pendente">🟡 Pendente</option>
+                        <option value="ativa">🟢 Ativa</option>
+                        <option value="atrasada">🔴 Atrasada</option>
+                        <option value="encerrada">⚫ Encerrada (Histórico)</option>
+                    </select>
+                    <input type="date" id="filtro-data" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
+                    <button class="btn-del" onclick="limparFiltros()" style="padding: 6px 12px; font-size: 13px;">Limpar</button>
+                </div>
+            </div>
+
             <ul id="lista-reservas" class="lista-itens">
-                <li><span>(Nenhuma reserva ativa no momento)</span></li>
+                <li><span>(Nenhuma reserva encontrada)</span></li>
             </ul>
         </section>
 

@@ -27,8 +27,22 @@ class ReservaController {
     async listar(req, res) {
         try {
             await verificarAtrasadas();
+            
+            const { status, data } = req.query;
+            let whereClause = {};
+
+            if (status) {
+                whereClause.status = status;
+            } else {
+                whereClause.status = { [Op.in]: ['pendente', 'ativa', 'atrasada'] };
+            }
+
+            if (data) {
+                whereClause.data_reserva = data;
+            }
+
             const reservas = await Reserva.findAll({
-                where: { status: { [Op.in]: ['pendente', 'ativa', 'atrasada'] } },
+                where: whereClause,
                 include: [{ model: Carrinho, attributes: ['descricao'] }],
                 order: [['data_reserva', 'ASC']]
             });
