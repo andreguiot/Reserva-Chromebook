@@ -123,7 +123,8 @@ async function carregarReservas(status = '', data = '') {
         let statusBadge;
         if (r.status === 'pendente') statusBadge = '🟡 Pendente';
         else if (r.status === 'ativa') statusBadge = '🟢 Ativa';
-        else statusBadge = '🔴 Atrasada';
+        else if (r.status === 'atrasada') statusBadge = '🔴 Atrasada';
+        else statusBadge = '⚫ Encerrada';
 
         const btnDevolucao = (r.status === 'ativa' || r.status === 'atrasada')
             ? `<button class="btn-dev" onclick="encerrarReserva(${r.id_reserva}, event)">Registrar Devolução</button>`
