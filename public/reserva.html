@@ -16,7 +16,8 @@
                 alt="Colégio La Salle Abel" class="logo-img">
             <p>Sistema de Reservas</p>
         </div>
-        <a href="/index.html" class="link-admin">Painel Admin →</a>
+        <button type="button" id="btn-ver-tabela" class="link-admin"
+            style="background:none;border:none;cursor:pointer;font-family:inherit;">📅 Ver Tabela de Horários</button>
     </header>
 
     <main class="reserva-container">
@@ -32,7 +33,7 @@
 
                 <div class="campo-grupo">
                     <label for="sala">Sala / Local de uso</label>
-                    <input type="text" id="sala" placeholder="Ex: Sala 12, Lab de Informática" required>
+                    <input type="text" id="sala" required>
                 </div>
 
                 <div class="linha-dupla">
@@ -80,11 +81,42 @@
             <div id="msg-sucesso" class="msg-sucesso" style="display: none;">
                 ✅ Reserva solicitada com sucesso! Valide sua reserva para a retirada.
             </div>
-            <div id="msg-erro" class="msg-erro" style="display: none; background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; border-left: 4px solid #c62828; margin-top: 16px; font-weight: 500;">
+            <div id="msg-erro" class="msg-erro"
+                style="display: none; background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; border-left: 4px solid #c62828; margin-top: 16px; font-weight: 500;">
             </div>
         </div>
-    </main>
-    <script src="js/reserva.js"></script>
+        <!-- Modal de Tabela de Horários -->
+        <div id="modal-agenda" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Agenda de Reservas</h3>
+                    <button type="button" class="close-btn" id="btn-fechar-modal">&times;</button>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="filtro-data-agenda">Consultar Data</label>
+                    <input type="date" id="filtro-data-agenda" style="width: auto; max-width: 200px;">
+                </div>
+
+                <table class="tabela-reservas">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Equipamento</th>
+                            <th>Local / Sala</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-agenda">
+                        <!-- Linhas injetadas via JS -->
+                    </tbody>
+                </table>
+                <div id="msg-sem-reservas" class="sem-reservas" style="display: none;">
+                    Nenhuma reserva bloqueando horários nesta data.
+                </div>
+            </div>
+        </div>
+
+        <script src="js/reserva.js"></script>
 </body>
 
 </html>

@@ -9,7 +9,7 @@ async function carregarCarrinhosDisponiveis() {
     carrinhos.forEach(c => {
         const opt = document.createElement('option');
         opt.value = c.id_carrinho;
-        opt.textContent = `${c.descricao} (Cap: ${c.capacidade_total})`;
+        opt.textContent = `${c.descricao} (QTD: ${c.capacidade_total})`;
         select.appendChild(opt);
     });
 }
@@ -64,3 +64,69 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 carregarCarrinhosDisponiveis();
 
 document.getElementById('data_reserva').min = new Date().toISOString().split('T')[0];
+
+/* Lógica da Tabela de Horários (Modal) */
+const modalAgenda = document.getElementById('modal-agenda');
+const btnVerTabela = document.getElementById('btn-ver-tabela');
+const btnFecharModal = document.getElementById('btn-fechar-modal');
+const inputFiltroData = document.getElementById('filtro-data-agenda');
+
+btnVerTabela.addEventListener('click', () => {
+    modalAgenda.style.display = 'flex';
+    // Define a data de hoje por padrão ao abrir
+    const hoje = new Date().toISOString().split('T')[0];
+    inputFiltroData.value = hoje;
+    carregarAgenda(hoje);
+});
+
+btnFecharModal.addEventListener('click', () => {
+    modalAgenda.style.display = 'none';
+});
+
+// Fechar ao clicar fora do conteúdo
+window.addEventListener('click', (e) => {
+    if (e.target === modalAgenda) {
+        modalAgenda.style.display = 'none';
+    }
+});
+
+inputFiltroData.addEventListener('change', (e) => {
+    carregarAgenda(e.target.value);
+});
+
+async function carregarAgenda(data) {
+    if (!data) return;
+    
+    const res = await fetch(`${API_URL}/reservas?data=${data}`);
+    const reservas = await res.json();
+    
+    const tbody = document.getElementById('tbody-agenda');
+    const msgSemReservas = document.getElementById('msg-sem-reservas');
+    const tabela = document.querySelector('.tabela-reservas');
+    
+    tbody.innerHTML = '';
+    
+    if (reservas.length === 0) {
+        tabela.style.display = 'none';
+        msgSemReservas.style.display = 'block';
+        return;
+    }
+    
+    tabela.style.display = 'table';
+    msgSemReservas.style.display = 'none';
+    
+    reservas.forEach(r => {
+        const tr = document.createElement('tr');
+        const horario = `${r.horario_inicio.slice(0,5)} às ${r.horario_fim.slice(0,5)}`;
+        const equipamento = r.tipo_reserva === 'carrinho' 
+            ? `🛒 ${r.Carrinho ? r.Carrinho.descricao : 'Carrinho'}` 
+            : `💻 ${r.quantidade_chromebooks} Chromebook(s)`;
+        
+        tr.innerHTML = `
+            <td><strong>${horario}</strong></td>
+            <td>${equipamento}</td>
+            <td>${r.sala}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+}

@@ -21,7 +21,7 @@ async function carregarCarrinhos() {
     carrinhos.forEach(c => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span>${c.descricao} (Cap: ${c.capacidade_total})</span>
+            <span>${c.descricao} (QTD: ${c.capacidade_total})</span>
             <button class="btn-del" onclick="deletarCarrinho(${c.id_carrinho})">X</button>
         `;
         lista.appendChild(li);
