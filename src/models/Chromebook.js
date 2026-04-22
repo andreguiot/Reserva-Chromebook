@@ -10,8 +10,7 @@ const Chromebook = sequelize.define('Chromebook', {
     },
     numero_serie: {
         type: DataTypes.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: true
     },
     id_patrimonio: {
         type: DataTypes.STRING,

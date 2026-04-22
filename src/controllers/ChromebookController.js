@@ -3,7 +3,10 @@ const { Chromebook } = require('../models');
 class ChromebookController {
     async listar(req, res) {
         try {
-            const chromebooks = await Chromebook.findAll();
+            const { Carrinho } = require('../models');
+            const chromebooks = await Chromebook.findAll({
+                include: [{ model: Carrinho, attributes: ['descricao'] }]
+            });
             return res.json(chromebooks);
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao listar chromebooks' });

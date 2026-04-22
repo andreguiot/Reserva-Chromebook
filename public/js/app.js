@@ -33,17 +33,68 @@ async function carregarCarrinhos() {
     });
 }
 
+let chromebooksData = [];
+let abaCarrinhoAtiva = null;
+
 async function carregarChromebooks() {
     const res = await fetch(`${API_URL}/chromebooks`);
-    const chromebooks = await res.json();
+    chromebooksData = await res.json();
+    renderizarTabsChromebooks();
+}
 
+function renderizarTabsChromebooks() {
+    const tabsContainer = document.getElementById('chromebooks-tabs');
     const lista = document.getElementById('lista-chromebooks');
-    lista.innerHTML = '';
+    
+    // Agrupar por carrinho
+    const grupos = {};
+    chromebooksData.forEach(c => {
+        const id = c.id_carrinho || 'sem-carrinho';
+        const desc = c.Carrinho ? c.Carrinho.descricao : 'Sem Carrinho';
+        if (!grupos[id]) grupos[id] = { id, desc, itens: [] };
+        grupos[id].itens.push(c);
+    });
 
-    chromebooks.forEach(c => {
+    const chaves = Object.keys(grupos);
+    if (chaves.length === 0) {
+        tabsContainer.innerHTML = '';
+        lista.innerHTML = '<li><span>Nenhum chromebook cadastrado</span></li>';
+        return;
+    }
+
+    if (!abaCarrinhoAtiva || !grupos[abaCarrinhoAtiva]) {
+        abaCarrinhoAtiva = chaves[0];
+    }
+
+    // Renderizar Tabs
+    tabsContainer.innerHTML = '';
+    chaves.forEach(id => {
+        const btn = document.createElement('button');
+        btn.textContent = grupos[id].desc;
+        btn.className = id === abaCarrinhoAtiva ? 'tab-btn active' : 'tab-btn';
+        btn.style.padding = '6px 12px';
+        btn.style.fontSize = '13px';
+        btn.onclick = () => {
+            abaCarrinhoAtiva = id;
+            renderizarTabsChromebooks();
+        };
+        tabsContainer.appendChild(btn);
+    });
+
+    // Renderizar Lista do Carrinho Ativo
+    lista.innerHTML = '';
+    const itensAtivos = grupos[abaCarrinhoAtiva].itens;
+    
+    if (itensAtivos.length === 0) {
+        lista.innerHTML = '<li><span>Nenhum dispositivo neste carrinho</span></li>';
+        return;
+    }
+
+    itensAtivos.forEach(c => {
         const li = document.createElement('li');
+        const serieInfo = c.numero_serie ? `Série: ${c.numero_serie}` : 'Série: N/A';
         li.innerHTML = `
-            <span>Série: ${c.numero_serie} | Pat: ${c.id_patrimonio}</span>
+            <span>${serieInfo} | Pat: ${c.id_patrimonio}</span>
             <button class="btn-del" onclick="deletarChromebook(${c.id_chromebook})">X</button>
         `;
         lista.appendChild(li);
