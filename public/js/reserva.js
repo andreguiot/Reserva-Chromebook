@@ -48,11 +48,16 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
     if (res.ok) {
         document.getElementById('form-reserva').reset();
         document.getElementById('data_reserva').min = new Date().toISOString().split('T')[0];
+        document.getElementById('msg-erro').style.display = 'none';
         document.getElementById('msg-sucesso').style.display = 'block';
         setTimeout(() => document.getElementById('msg-sucesso').style.display = 'none', 5000);
     } else {
         const data = await res.json();
-        alert(`Erro: ${data.erro}`);
+        document.getElementById('msg-sucesso').style.display = 'none';
+        const msgErro = document.getElementById('msg-erro');
+        msgErro.innerText = `❌ ${data.erro}`;
+        msgErro.style.display = 'block';
+        setTimeout(() => msgErro.style.display = 'none', 8000);
     }
 });
 
