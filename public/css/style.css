@@ -275,6 +275,67 @@ select:focus {
     color: #FFFFFF;
 }
 
+/* Estilos para as Abas de Chromebooks (Fundo Branco) */
+.tab-chromebook {
+    background: transparent;
+    color: #666666;
+    border: none;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+.tab-chromebook:hover {
+    color: var(--color-primary);
+}
+.tab-chromebook.active {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+}
+
+/* Grid para exibição compacta de Chromebooks */
+.grid-dispositivos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: calc(var(--base-unit) * 3);
+    list-style: none;
+    padding: 0;
+}
+
+.grid-dispositivos li {
+    background-color: #FAFAFA;
+    padding: calc(var(--base-unit) * 3) calc(var(--base-unit) * 4);
+    border: 1px solid #E0E0E0;
+    border-radius: var(--radius-global);
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--base-unit));
+    position: relative;
+}
+
+.grid-dispositivos .info-serie {
+    font-weight: 600;
+    color: var(--color-primary);
+    font-size: 14px;
+    padding-right: 30px; /* espaco pro botao */
+    word-break: break-all;
+}
+
+.grid-dispositivos .info-pat {
+    color: var(--color-text-primary);
+    font-size: 13px;
+}
+
+.grid-dispositivos .btn-del {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 4px 8px;
+    font-size: 11px;
+}
+
 @media (max-width: 768px) {
     header {
         flex-direction: column;

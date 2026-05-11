@@ -71,9 +71,7 @@ function renderizarTabsChromebooks() {
     chaves.forEach(id => {
         const btn = document.createElement('button');
         btn.textContent = grupos[id].desc;
-        btn.className = id === abaCarrinhoAtiva ? 'tab-btn active' : 'tab-btn';
-        btn.style.padding = '6px 12px';
-        btn.style.fontSize = '13px';
+        btn.className = id === abaCarrinhoAtiva ? 'tab-chromebook active' : 'tab-chromebook';
         btn.onclick = () => {
             abaCarrinhoAtiva = id;
             renderizarTabsChromebooks();
@@ -92,10 +90,12 @@ function renderizarTabsChromebooks() {
 
     itensAtivos.forEach(c => {
         const li = document.createElement('li');
-        const serieInfo = c.numero_serie ? `Série: ${c.numero_serie}` : 'Série: N/A';
+        const serieInfo = c.numero_serie ? c.numero_serie : 'N/A';
+        const patInfo = c.id_patrimonio ? c.id_patrimonio : 'N/A';
         li.innerHTML = `
-            <span>${serieInfo} | Pat: ${c.id_patrimonio}</span>
-            <button class="btn-del" onclick="deletarChromebook(${c.id_chromebook})">X</button>
+            <div class="info-serie">Série: ${serieInfo}</div>
+            <div class="info-pat">Pat: ${patInfo}</div>
+            <button class="btn-del" onclick="deletarChromebook(${c.id_chromebook})" title="Deletar">X</button>
         `;
         lista.appendChild(li);
     });
