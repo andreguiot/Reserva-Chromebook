@@ -4,8 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel Admin - La Salle Abel</title>
+    <title>Solicitar Reserva - La Salle Abel</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reserva.css">
 </head>
 
 <body>
@@ -15,85 +16,111 @@
                 alt="Colégio La Salle Abel" class="logo-img">
             <p>Sistema de Reservas</p>
         </div>
-        <nav class="top-menu">
-            <button class="tab-btn active" onclick="mudarAba('reservas')">Validar Reservas</button>
-            <button class="tab-btn" onclick="mudarAba('dispositivos')">Cadastrar Dispositivos</button>
-        </nav>
+        <button type="button" id="btn-ver-tabela" class="link-admin"
+            style="background:none;border:none;cursor:pointer;font-family:inherit;">📅 Ver Tabela de Horários</button>
     </header>
 
-    <main class="container">
+    <main class="reserva-container">
+        <div class="reserva-card">
+            <h2>Solicitar Reserva de Chromebooks</h2>
+            <p class="subtitulo">Preencha o formulário abaixo.</p>
 
-        <!-- ABA: VALIDAR RESERVAS -->
-        <section id="aba-reservas" class="aba-content active">
-            <h2>Validação de Reservas</h2>
-            <div class="form-card">
-                <p>Escaneie ou digite o código de patrimônio para validar a reserva e registrar a retirada ou devolução.
-                </p>
-                <div class="scan-group">
-                    <input type="text" id="scan-patrimonio" placeholder="Selecione uma reserva abaixo" autofocus>
-                    <button class="btn-yellow" onclick="validarReserva()">Validar</button>
-                </div>
-                <small class="scan-hint">Clique em uma reserva para selecioná-la, depois insira o patrimônio.</small>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 16px;">
-                <h2 style="margin: 0;">Lista de Reservas</h2>
-                <div class="filtros-reservas" style="display: flex; gap: 8px;">
-                    <select id="filtro-status" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
-                        <option value="">Ativas/Pendentes/Atrasadas (Padrão)</option>
-                        <option value="pendente">🟡 Pendente</option>
-                        <option value="ativa">🟢 Ativa</option>
-                        <option value="atrasada">🔴 Atrasada</option>
-                        <option value="encerrada">⚫ Encerrada (Histórico)</option>
-                    </select>
-                    <input type="date" id="filtro-data" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
-                    <button class="btn-del" onclick="limparFiltros()" style="padding: 6px 12px; font-size: 13px;">Limpar</button>
-                </div>
-            </div>
-
-            <ul id="lista-reservas" class="lista-itens">
-                <li><span>(Nenhuma reserva encontrada)</span></li>
-            </ul>
-        </section>
-
-        <!-- ABA: CADASTRAR DISPOSITIVOS -->
-        <section id="aba-dispositivos" class="aba-content" style="display: none;">
-            <div class="grid-2">
-                <!-- Seção Carrinhos -->
-                <div class="panel">
-                    <h2>Cadastrar Carrinho</h2>
-                    <form id="form-carrinho" class="form-card">
-                        <input type="text" id="desc-carrinho" placeholder="Descrição (Ex: Carrinho A)" required>
-                        <input type="number" id="cap-carrinho" placeholder="Capacidade Total" required>
-                        <button type="submit" class="btn-yellow">Adicionar Carrinho</button>
-                    </form>
-                    <ul id="lista-carrinhos" class="lista-itens"></ul>
+            <form id="form-reserva">
+                <div class="campo-grupo">
+                    <label for="nome_professor">Digite seu nome</label>
+                    <input type="text" id="nome_professor" placeholder="Nome completo" required>
                 </div>
 
-                <!-- Seção Chromebooks -->
-                <div class="panel">
-                    <h2>Cadastrar Chromebook</h2>
-                    <form id="form-chromebook" class="form-card">
-                        <input type="text" id="serie-chromebook" placeholder="Número de Série" required>
-                        <input type="text" id="patrimonio-chromebook" placeholder="Nº Patrimônio" required>
-                        <select id="select-carrinho" required>
-                            <option value="">Selecione o Carrinho</option>
-                        </select>
-                        <button type="submit" class="btn-yellow">Adicionar Chromebook</button>
-                    </form>
-                    <div id="chromebooks-tabs" style="margin-top: 16px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 2px solid #EEEEEE; padding-bottom: 8px;">
-                        <!-- Tabs injetadas via JS -->
+                <div class="campo-grupo">
+                    <label for="sala">Sala / Local de uso</label>
+                    <input type="text" id="sala" required>
+                </div>
+
+                <div class="linha-dupla">
+                    <div class="campo-grupo">
+                        <label for="data_reserva">Data</label>
+                        <input type="date" id="data_reserva" required>
                     </div>
-                    <div id="chromebooks-content">
-                        <ul id="lista-chromebooks" class="grid-dispositivos"></ul>
+                    <div class="campo-grupo">
+                        <label for="horario_inicio">Horário Início</label>
+                        <input type="time" id="horario_inicio" required>
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="horario_fim">Horário Fim</label>
+                        <input type="time" id="horario_fim" required>
                     </div>
                 </div>
+
+                <div class="campo-grupo">
+                    <label>Tipo de Reserva</label>
+                    <div class="tipo-selector">
+                        <button type="button" class="tipo-btn active" id="btn-carrinho"
+                            onclick="selecionarTipo('carrinho')">
+                            Carrinho Inteiro
+                        </button>
+                        <button type="button" class="tipo-btn" id="btn-individual"
+                            onclick="selecionarTipo('individual')">
+                            Chromebooks Individuais
+                        </button>
+                    </div>
+                </div>
+
+                <div id="opcao-carrinho" class="campo-grupo">
+                    <label for="select-carrinho-reserva">Selecionar Carrinho</label>
+                    <select id="select-carrinho-reserva" required></select>
+                </div>
+
+                <div id="opcao-individual" class="campo-grupo" style="display: none;">
+                    <label for="quantidade">Quantidade de Chromebooks</label>
+                    <input type="number" id="quantidade" placeholder="Ex: 5" min="1">
+                </div>
+
+                <button type="submit" class="btn-yellow btn-submit">Enviar Solicitação</button>
+            </form>
+
+            <div id="msg-sucesso" class="msg-sucesso" style="display: none;">
+                ✅ Reserva solicitada com sucesso! Valide sua reserva para a retirada.
             </div>
-        </section>
+            <div id="msg-erro" class="msg-erro"
+                style="display: none; background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; border-left: 4px solid #c62828; margin-top: 16px; font-weight: 500;">
+            </div>
+        </div>
+        <!-- Modal de Tabela de Horários -->
+        <div id="modal-agenda" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Agenda de Reservas</h3>
+                    <button type="button" class="close-btn" id="btn-fechar-modal">&times;</button>
+                </div>
 
-    </main>
+                <div class="campo-grupo">
+                    <label for="filtro-data-agenda">Consultar Data</label>
+                    <input type="date" id="filtro-data-agenda" style="width: auto; max-width: 200px;">
+                </div>
 
-    <script src="js/app.js"></script>
+                <table class="tabela-reservas">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Equipamento</th>
+                            <th>Local / Sala</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-agenda">
+                        <!-- Linhas injetadas via JS -->
+                    </tbody>
+                </table>
+                <div id="msg-sem-reservas" class="sem-reservas" style="display: none;">
+                    Nenhuma reserva bloqueando horários nesta data.
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 24px;">
+            <a href="admin.html" style="color: #CCCCCC; text-decoration: none; font-size: 12px; font-weight: 600;">&#128274; Acesso Restrito</a>
+        </div>
+
+        <script src="js/reserva.js"></script>
 </body>
 
 </html>

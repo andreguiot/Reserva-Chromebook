@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - La Salle Abel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        // Proteção do Frontend
+        if (!localStorage.getItem('adminToken')) {
+            window.location.href = 'admin.html';
+        }
+        function fazerLogout() {
+            localStorage.removeItem('adminToken');
+            window.location.href = 'admin.html';
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="https://lasalle.edu.br/public/uploads/images/abel/5af5fc44d4812(BRANCA-HORIZONTAL)_Abel.png"
+                alt="Colégio La Salle Abel" class="logo-img">
+            <p>Sistema de Reservas</p>
+        </div>
+        <nav class="top-menu">
+            <button class="tab-btn active" onclick="mudarAba('reservas')">Validar Reservas</button>
+            <button class="tab-btn" onclick="mudarAba('dispositivos')">Cadastrar Dispositivos</button>
+            <a href="index.html" class="tab-btn" style="text-decoration: none; display: flex; align-items: center; color: rgba(255,255,255,0.7);">Ver Site</a>
+            <button class="tab-btn" onclick="fazerLogout()" style="color: #FFCDD2; font-weight: normal;">Sair</button>
+        </nav>
+    </header>
+
+    <main class="container">
+
+        <!-- ABA: VALIDAR RESERVAS -->
+        <section id="aba-reservas" class="aba-content active">
+            <h2>Validação de Reservas</h2>
+            <div class="form-card">
+                <p>Escaneie ou digite o código de patrimônio para validar a reserva e registrar a retirada ou devolução.
+                </p>
+                <div class="scan-group">
+                    <input type="text" id="scan-patrimonio" placeholder="Selecione uma reserva abaixo" autofocus>
+                    <button class="btn-yellow" onclick="validarReserva()">Validar</button>
+                </div>
+                <small class="scan-hint">Clique em uma reserva para selecioná-la, depois insira o patrimônio.</small>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 16px;">
+                <h2 style="margin: 0;">Lista de Reservas</h2>
+                <div class="filtros-reservas" style="display: flex; gap: 8px;">
+                    <select id="filtro-status" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
+                        <option value="">Ativas/Pendentes/Atrasadas (Padrão)</option>
+                        <option value="pendente">🟡 Pendente</option>
+                        <option value="ativa">🟢 Ativa</option>
+                        <option value="atrasada">🔴 Atrasada</option>
+                        <option value="encerrada">⚫ Encerrada (Histórico)</option>
+                    </select>
+                    <input type="date" id="filtro-data" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
+                    <button class="btn-del" onclick="limparFiltros()" style="padding: 6px 12px; font-size: 13px;">Limpar</button>
+                </div>
+            </div>
+
+            <ul id="lista-reservas" class="lista-itens">
+                <li><span>(Nenhuma reserva encontrada)</span></li>
+            </ul>
+        </section>
+
+        <!-- ABA: CADASTRAR DISPOSITIVOS -->
+        <section id="aba-dispositivos" class="aba-content" style="display: none;">
+            <div class="grid-2">
+                <!-- Seção Carrinhos -->
+                <div class="panel">
+                    <h2>Cadastrar Carrinho</h2>
+                    <form id="form-carrinho" class="form-card">
+                        <input type="text" id="desc-carrinho" placeholder="Descrição (Ex: Carrinho A)" required>
+                        <input type="number" id="cap-carrinho" placeholder="Capacidade Total" required>
+                        <button type="submit" class="btn-yellow">Adicionar Carrinho</button>
+                    </form>
+                    <ul id="lista-carrinhos" class="lista-itens"></ul>
+                </div>
+
+                <!-- Seção Chromebooks -->
+                <div class="panel">
+                    <h2>Cadastrar Chromebook</h2>
+                    <form id="form-chromebook" class="form-card">
+                        <input type="text" id="serie-chromebook" placeholder="Número de Série" required>
+                        <input type="text" id="patrimonio-chromebook" placeholder="Nº Patrimônio" required>
+                        <select id="select-carrinho" required>
+                            <option value="">Selecione o Carrinho</option>
+                        </select>
+                        <button type="submit" class="btn-yellow">Adicionar Chromebook</button>
+                    </form>
+                    <div id="chromebooks-tabs" style="margin-top: 16px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 2px solid #EEEEEE; padding-bottom: 8px;">
+                        <!-- Tabs injetadas via JS -->
+                    </div>
+                    <div id="chromebooks-content">
+                        <ul id="lista-chromebooks" class="grid-dispositivos"></ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>
