@@ -8,6 +8,14 @@ function mudarAba(abaId) {
     event.currentTarget.classList.add('active');
 }
 
+function getAuthHeaders() {
+    const token = localStorage.getItem('adminToken');
+    return {
+        'Content-Type': 'application/json',
+        'Authorization': token ? `Bearer ${token}` : ''
+    };
+}
+
 async function carregarCarrinhos() {
     const res = await fetch(`${API_URL}/carrinhos`);
     const carrinhos = await res.json();
@@ -108,7 +116,7 @@ document.getElementById('form-carrinho').addEventListener('submit', async (e) =>
 
     await fetch(`${API_URL}/carrinhos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ descricao, capacidade_total })
     });
 
@@ -124,7 +132,7 @@ document.getElementById('form-chromebook').addEventListener('submit', async (e) 
 
     await fetch(`${API_URL}/chromebooks`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ numero_serie, id_patrimonio, id_carrinho: id_carrinho || null })
     });
 
@@ -134,14 +142,14 @@ document.getElementById('form-chromebook').addEventListener('submit', async (e) 
 
 async function deletarCarrinho(id) {
     if (confirm('Deletar este carrinho?')) {
-        await fetch(`${API_URL}/carrinhos/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/carrinhos/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
         carregarCarrinhos();
     }
 }
 
 async function deletarChromebook(id) {
     if (confirm('Deletar este chromebook?')) {
-        await fetch(`${API_URL}/chromebooks/${id}`, { method: 'DELETE' });
+        await fetch(`${API_URL}/chromebooks/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
         carregarChromebooks();
     }
 }
@@ -235,7 +243,7 @@ async function validarReserva() {
 
     const res = await fetch(endpoint, {
         method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: getAuthHeaders(),
         body: JSON.stringify({ id_patrimonio })
     });
 
@@ -262,7 +270,7 @@ async function encerrarReserva(id, event) {
     event.stopPropagation();
     if (!confirm('Confirmar devolução desta reserva?')) return;
 
-    const res = await fetch(`${API_URL}/reservas/${id}/encerrar`, { method: 'PUT' });
+    const res = await fetch(`${API_URL}/reservas/${id}/encerrar`, { method: 'PUT', headers: getAuthHeaders() });
     if (res.ok) {
         aplicarFiltros();
     } else {
