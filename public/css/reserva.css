@@ -190,3 +190,15 @@
         flex-direction: column;
     }
 }
+
+.link-admin {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    color: white; /* Added for contrast against blue header */
+}
+
+.link-admin:hover {
+    text-decoration: underline;
+}

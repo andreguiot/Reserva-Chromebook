@@ -6,16 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Admin - La Salle Abel</title>
     <link rel="stylesheet" href="css/style.css">
-    <script>
-        // Proteção do Frontend
-        if (!localStorage.getItem('adminToken')) {
-            window.location.href = 'admin.html';
-        }
-        function fazerLogout() {
-            localStorage.removeItem('adminToken');
-            window.location.href = 'admin.html';
-        }
-    </script>
+    <script src="js/security.js"></script>
 </head>
 
 <body>
@@ -28,8 +19,8 @@
         <nav class="top-menu">
             <button class="tab-btn active" onclick="mudarAba('reservas')">Validar Reservas</button>
             <button class="tab-btn" onclick="mudarAba('dispositivos')">Cadastrar Dispositivos</button>
-            <a href="index.html" class="tab-btn" style="text-decoration: none; display: flex; align-items: center; color: rgba(255,255,255,0.7);">Ver Site</a>
-            <button class="tab-btn" onclick="fazerLogout()" style="color: #FFCDD2; font-weight: normal;">Sair</button>
+            <a href="index.html" class="tab-btn btn-ver-site">Solicitar Reserva</a>
+            <button class="tab-btn btn-sair" onclick="fazerLogout()">Sair</button>
         </nav>
     </header>
 
@@ -48,18 +39,18 @@
                 <small class="scan-hint">Clique em uma reserva para selecioná-la, depois insira o patrimônio.</small>
             </div>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 32px; margin-bottom: 16px;">
-                <h2 style="margin: 0;">Lista de Reservas</h2>
-                <div class="filtros-reservas" style="display: flex; gap: 8px;">
-                    <select id="filtro-status" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
+            <div class="reservas-header">
+                <h2>Lista de Reservas</h2>
+                <div class="filtros-reservas">
+                    <select id="filtro-status" onchange="aplicarFiltros()" class="filtro-input">
                         <option value="">Ativas/Pendentes/Atrasadas (Padrão)</option>
                         <option value="pendente">🟡 Pendente</option>
                         <option value="ativa">🟢 Ativa</option>
                         <option value="atrasada">🔴 Atrasada</option>
                         <option value="encerrada">⚫ Encerrada (Histórico)</option>
                     </select>
-                    <input type="date" id="filtro-data" onchange="aplicarFiltros()" style="padding: 6px; font-size: 13px;">
-                    <button class="btn-del" onclick="limparFiltros()" style="padding: 6px 12px; font-size: 13px;">Limpar</button>
+                    <input type="date" id="filtro-data" onchange="aplicarFiltros()" class="filtro-input">
+                    <button class="btn-del btn-filtro-clear" onclick="limparFiltros()">Limpar</button>
                 </div>
             </div>
 
@@ -93,7 +84,7 @@
                         </select>
                         <button type="submit" class="btn-yellow">Adicionar Chromebook</button>
                     </form>
-                    <div id="chromebooks-tabs" style="margin-top: 16px; margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; border-bottom: 2px solid #EEEEEE; padding-bottom: 8px;">
+                    <div id="chromebooks-tabs" class="chromebooks-tabs-container">
                         <!-- Tabs injetadas via JS -->
                     </div>
                     <div id="chromebooks-content">
