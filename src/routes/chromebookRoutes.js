@@ -1,11 +1,12 @@
 const { Router } = require('express');
 const ChromebookController = require('../controllers/ChromebookController');
+const authMiddleware = require('../middlewares/authMiddleware');
 
 const router = Router();
 
-router.get('/', ChromebookController.listar);
-router.post('/', ChromebookController.criar);
-router.put('/:id', ChromebookController.atualizar);
-router.delete('/:id', ChromebookController.deletar);
+router.get('/', ChromebookController.listar); // Publico
+router.post('/', authMiddleware, ChromebookController.criar); // Protegido
+router.put('/:id', authMiddleware, ChromebookController.atualizar); // Protegido
+router.delete('/:id', authMiddleware, ChromebookController.deletar); // Protegido
 
 module.exports = router;

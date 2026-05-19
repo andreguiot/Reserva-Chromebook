@@ -12,10 +12,12 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 const { sequelize } = require('./models');
+const authRoutes = require('./routes/authRoutes');
 const carrinhoRoutes = require('./routes/carrinhoRoutes');
 const chromebookRoutes = require('./routes/chromebookRoutes');
 const reservaRoutes = require('./routes/reservaRoutes');
 
+app.use('/api/auth', authRoutes);
 app.use('/api/carrinhos', carrinhoRoutes);
 app.use('/api/chromebooks', chromebookRoutes);
 app.use('/api/reservas', reservaRoutes);
