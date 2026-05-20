@@ -205,6 +205,41 @@ async function carregarReservas(status = '', data = '') {
     });
 }
 
+function deselecionarReserva() {
+    document.querySelectorAll('.reserva-item').forEach(el => el.classList.remove('selecionada'));
+    reservaSelecionadaId = null;
+    reservaSelecionadaTipo = null;
+    document.getElementById('scan-patrimonio').value = '';
+    document.getElementById('scan-patrimonio').placeholder = 'Selecione uma reserva abaixo';
+    document.getElementById('chromebooks-escaneados').innerHTML = '';
+}
+
+async function carregarChromebooksEscaneados(id_reserva) {
+    const res = await fetch(`${API_URL}/reservas/${id_reserva}/chromebooks`, { headers: getAuthHeaders() });
+    const itens = await res.json();
+    const container = document.getElementById('chromebooks-escaneados');
+
+    if (!itens || itens.length === 0) {
+        container.innerHTML = '<p class="scan-hint" style="margin-top: 8px;">Nenhum dispositivo registrado ainda.</p>';
+        return;
+    }
+
+    container.innerHTML = `
+        <h4 class="scan-devices-title">Dispositivos Registrados (${itens.length})</h4>
+        <ul class="scan-devices-list">
+            ${ itens.map(item => {
+                const cb = item.Chromebook;
+                const isDeslocado = item.status === 'deslocado';
+                return `<li class="scan-device-item ${isDeslocado ? 'deslocado' : ''}">  
+                    <span class="scan-device-pat">Pat: <strong>${cb ? cb.id_patrimonio : 'N/A'}</strong></span>
+                    <span class="scan-device-serie">Série: ${cb ? cb.numero_serie : 'N/A'}</span>
+                    ${isDeslocado ? '<span class="badge-deslocado">⚠️ Deslocado</span>' : '<span class="badge-entregue">✅ Entregue</span>'}
+                </li>`;
+            }).join('') }
+        </ul>
+    `;
+}
+
 function selecionarReserva(li, reserva) {
     document.querySelectorAll('.reserva-item').forEach(el => el.classList.remove('selecionada'));
     li.classList.add('selecionada');
@@ -220,6 +255,9 @@ function selecionarReserva(li, reserva) {
     }
     input.value = '';
     input.focus();
+
+    // Carrega dispositivos já registrados para esta reserva
+    carregarChromebooksEscaneados(reserva.id_reserva);
 }
 
 async function validarReserva() {
@@ -240,7 +278,6 @@ async function validarReserva() {
 
     const method = reservaSelecionadaTipo === 'carrinho' ? 'PUT' : 'POST';
 
-
     const res = await fetch(endpoint, {
         method,
         headers: getAuthHeaders(),
@@ -260,9 +297,8 @@ async function validarReserva() {
         alert('✅ Validado com sucesso!');
     }
 
-    document.getElementById('scan-patrimonio').value = '';
-    reservaSelecionadaId = null;
-    reservaSelecionadaTipo = null;
+    // Força nova seleção para o próximo dispositivo
+    deselecionarReserva();
     aplicarFiltros();
 }
 
