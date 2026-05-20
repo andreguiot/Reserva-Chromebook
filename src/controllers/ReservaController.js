@@ -101,6 +101,14 @@ class ReservaController {
             const chromebook = await Chromebook.findOne({ where: { id_patrimonio } });
             if (!chromebook) return res.status(404).json({ erro: 'Chromebook não encontrado' });
 
+            // Verifica se este Chromebook já foi escaneado para esta mesma reserva
+            const jaEscaneado = await ReservaChromebook.findOne({
+                where: { id_reserva: reserva.id_reserva, id_chromebook: chromebook.id_chromebook }
+            });
+            if (jaEscaneado) {
+                return res.status(409).json({ erro: `O patrimônio ${id_patrimonio} já foi registrado nesta reserva.` });
+            }
+
             // Verifica se o carrinho de origem do Chromebook está reservado por outra reserva ativa
             let statusItem = 'entregue';
             if (chromebook.id_carrinho) {
@@ -178,6 +186,20 @@ class ReservaController {
             return res.json({ mensagem: 'Reserva encerrada com sucesso' });
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao encerrar reserva' });
+        }
+    }
+
+    async listarChromebooks(req, res) {
+        try {
+            const { id } = req.params;
+            const itens = await ReservaChromebook.findAll({
+                where: { id_reserva: id },
+                include: [{ model: Chromebook, attributes: ['numero_serie', 'id_patrimonio'] }],
+                order: [['data_confirmacao', 'ASC']]
+            });
+            return res.json(itens);
+        } catch (error) {
+            return res.status(500).json({ erro: 'Erro ao listar chromebooks da reserva' });
         }
     }
 }
