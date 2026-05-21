@@ -232,7 +232,10 @@ async function carregarChromebooksEscaneados(id_reserva) {
                 const isDeslocado = item.status === 'deslocado';
                 return `<li class="scan-device-item ${isDeslocado ? 'deslocado' : ''}">  
                     <span class="scan-device-pat">Pat: <strong>${cb ? cb.id_patrimonio : 'N/A'}</strong></span>
-                    <span class="scan-device-serie">Série: ${cb ? cb.numero_serie : 'N/A'}</span>
+                    <span class="scan-device-serie">
+                        Série: ${cb ? cb.numero_serie : 'N/A'}
+                        <strong style="margin-left: 8px; color: var(--color-primary);">[${cb && cb.Carrinho ? cb.Carrinho.descricao : 'Sem Carrinho'}]</strong>
+                    </span>
                     ${isDeslocado ? '<span class="badge-deslocado">⚠️ Deslocado</span>' : '<span class="badge-entregue">✅ Entregue</span>'}
                 </li>`;
             }).join('') }

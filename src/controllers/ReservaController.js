@@ -194,11 +194,16 @@ class ReservaController {
             const { id } = req.params;
             const itens = await ReservaChromebook.findAll({
                 where: { id_reserva: id },
-                include: [{ model: Chromebook, attributes: ['numero_serie', 'id_patrimonio'] }],
+                include: [{ 
+                    model: Chromebook, 
+                    attributes: ['numero_serie', 'id_patrimonio'],
+                    include: [{ model: Carrinho, attributes: ['descricao'] }]
+                }],
                 order: [['data_confirmacao', 'ASC']]
             });
             return res.json(itens);
         } catch (error) {
+            console.error('Erro em listarChromebooks:', error);
             return res.status(500).json({ erro: 'Erro ao listar chromebooks da reserva' });
         }
     }
