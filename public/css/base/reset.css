@@ -1,0 +1,25 @@
+body {
+    font-family: 'Open Sans', Arial, Helvetica, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    margin: 0;
+    padding: 0;
+    line-height: 1.5;
+    font-size: 15px;
+    /* Definido no branding */
+}
+
+.container {
+    max-width: 1200px;
+    margin: calc(var(--base-unit) * 10) auto;
+    padding: 0 calc(var(--base-unit) * 4);
+}
+
+section h2 {
+    color: var(--color-primary);
+    font-size: 18px;
+    margin-bottom: calc(var(--base-unit) * 6);
+    font-weight: 600;
+    border-bottom: 1px solid #EEEEEE;
+    padding-bottom: calc(var(--base-unit) * 2);
+}

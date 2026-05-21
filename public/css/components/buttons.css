@@ -1,0 +1,64 @@
+/* Botões Principais conforme o Branding: #1A7AD3, radius 10px, text #FFFFFF */
+.btn-yellow {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+    padding: calc(var(--base-unit) * 3) calc(var(--base-unit) * 6);
+    border-radius: var(--radius-btn);
+    font-size: 15px;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    cursor: pointer;
+    box-shadow: none;
+    transition: opacity 0.2s;
+}
+
+.btn-yellow:hover {
+    opacity: 0.9;
+}
+
+.btn-del {
+    background-color: #FFFFFF;
+    color: #D32F2F;
+    border: 1px solid #D32F2F;
+    padding: calc(var(--base-unit) * 1.5) calc(var(--base-unit) * 3);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-del:hover {
+    background-color: #D32F2F;
+    color: #FFFFFF;
+}
+
+.btn-dev {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: calc(var(--base-unit) * 2) calc(var(--base-unit) * 4);
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-dev:hover {
+    background-color: #45a049;
+}
+
+/* Utility classes extraidas do HTML para separacao de conceitos */
+.btn-ver-site {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    color: rgba(255,255,255,0.7);
+}
+
+.btn-sair {
+    color: #FFCDD2;
+    font-weight: normal;
+}

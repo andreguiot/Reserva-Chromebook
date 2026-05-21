@@ -79,3 +79,15 @@ body {
 .footer-link:hover {
     color: var(--color-primary);
 }
+
+@media (max-width: 600px) {
+    body {
+        padding: 24px;
+        box-sizing: border-box;
+    }
+
+    .login-card {
+        padding: 24px;
+        box-sizing: border-box;
+    }
+}

@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+:root {
+    /* Branding Abel Oficial */
+    --color-primary: #1A7AD3;
+    --color-secondary: #FCAC18;
+    --color-bg: #FFFFFF;
+    --color-text-primary: #666666;
+    --color-link: #005BAC;
+
+    /* Espaçamentos e Raios Globais */
+    --base-unit: 4px;
+    --radius-global: 8px;
+    --radius-btn: 10px;
+    --radius-input: 0px;
+}

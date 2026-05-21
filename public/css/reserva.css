@@ -189,6 +189,16 @@
     .tipo-selector {
         flex-direction: column;
     }
+
+    .reserva-card {
+        padding: 1.5rem;
+    }
+
+    .tabela-reservas {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
 }
 
 .link-admin {
