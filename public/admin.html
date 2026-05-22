@@ -7,25 +7,31 @@
     <title>Acesso Restrito - La Salle Abel</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/admin.css">
+    <!-- SDK do Google Identity -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
 
     <div class="login-card">
-        <!-- Logo do Colégio (versão colorida para fundo branco) -->
-        <img src="images/logo-abel.png"
-            alt="La Salle Abel" class="login-logo">
-        <!-- Ajuste provisório para usar a mesma imagem caso não tenha uma colorida fácil -->
+        <img src="images/logo-abel.png" alt="La Salle Abel" class="login-logo">
 
         <h1 class="login-title">Acesso Administrativo</h1>
-        <p class="login-subtitle">Portal Admin.</p>
+        <p class="login-subtitle">Acesso restrito para funcionários.</p>
 
-        <form id="form-login" class="login-form">
-            <input type="password" id="senha" placeholder="Senha Mestra" required autocomplete="current-password">
-            <button type="submit" class="btn-yellow btn-login">Acessar Painel</button>
-        </form>
+        <!-- Configuração do Google Identity -->
+        <div id="g_id_onload" data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com" data-context="signin" data-ux_mode="popup"
+            data-callback="handleCredentialResponse" data-auto_prompt="false">
+        </div>
 
-        <div id="erro-login">Senha incorreta. Acesso negado.</div>
+        <!-- Botão Visual do Google -->
+        <div class="g_id_signin" style="display: flex; justify-content: center; margin: 20px 0;" data-type="standard"
+            data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large"
+            data-logo_alignment="left">
+        </div>
+
+        <div id="erro-login" style="display: none; color: red; margin-bottom: 15px; text-align: center;">Acesso negado.
+        </div>
 
         <a href="index.html" class="footer-link">&larr; Voltar para Reservas</a>
     </div>

@@ -7,6 +7,8 @@
     <title>Solicitar Reserva - La Salle Abel</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reserva.css">
+    <!-- SDK do Google Identity -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 
 <body>
@@ -22,12 +24,31 @@
     <main class="reserva-container">
         <div class="reserva-card">
             <h2>Solicitar Reserva de Chromebooks</h2>
-            <p class="subtitulo">Preencha o formulário abaixo.</p>
+            <p class="subtitulo" id="reserva-subtitulo">Autentique-se com sua conta institucional para solicitar.</p>
 
-            <form id="form-reserva">
+            <!-- Configuração do Google Identity para Reservas -->
+            <div id="google-login-container" style="text-align: center; padding: 20px 0;">
+                <div id="g_id_onload"
+                     data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com"
+                     data-context="signin"
+                     data-ux_mode="popup"
+                     data-callback="handleCredentialResponseReserva"
+                     data-auto_prompt="false">
+                </div>
+                <div class="g_id_signin" style="display: flex; justify-content: center;"
+                     data-type="standard"
+                     data-shape="rectangular"
+                     data-theme="outline"
+                     data-text="signin_with"
+                     data-size="large"
+                     data-logo_alignment="left">
+                </div>
+            </div>
+
+            <form id="form-reserva" style="display: none;">
                 <div class="campo-grupo">
-                    <label for="nome_professor">Digite seu nome</label>
-                    <input type="text" id="nome_professor" placeholder="Nome completo" required>
+                    <label for="nome_professor">Professor</label>
+                    <input type="text" id="nome_professor" readonly required style="background-color: #f0f0f0; cursor: not-allowed; border: 1px solid #ddd;">
                 </div>
 
                 <div class="campo-grupo">

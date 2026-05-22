@@ -1,40 +1,43 @@
-const API_URL = 'http://localhost:3000/api';
+const API_URL = '/api';
 
-document.getElementById('form-login')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const senha = document.getElementById('senha').value;
+// Função chamada automaticamente pelo Google após o login bem-sucedido no popup
+async function handleCredentialResponse(response) {
     const erroDiv = document.getElementById('erro-login');
-    const btn = document.querySelector('.btn-login');
-
-    erroDiv.style.display = 'none';
-    btn.textContent = 'Verificando...';
-    btn.disabled = true;
+    if (erroDiv) erroDiv.style.display = 'none';
 
     try {
-        const response = await fetch(`${API_URL}/auth/login`, {
+        const res = await fetch(`${API_URL}/auth/google`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ senha })
+            body: JSON.stringify({ credential: response.credential })
         });
 
-        const data = await response.json();
+        const data = await res.json();
 
         if (data.success) {
-            // Salvar token e redirecionar
-            localStorage.setItem('adminToken', data.token);
-            window.location.href = 'painel.html';
+            if (data.role === 'Admin') {
+                // Salvar token gerado pelo nosso backend
+                localStorage.setItem('adminToken', data.token);
+                // Redireciona para o painel se for Admin
+                window.location.href = 'painel.html';
+            } else {
+                if (erroDiv) {
+                    erroDiv.textContent = 'Acesso negado. Apenas administradores podem acessar o painel.';
+                    erroDiv.style.display = 'block';
+                }
+            }
         } else {
-            erroDiv.textContent = data.erro || 'Senha incorreta.';
-            erroDiv.style.display = 'block';
-            btn.textContent = 'Acessar Painel';
-            btn.disabled = false;
+            if (erroDiv) {
+                erroDiv.textContent = data.erro || 'Acesso negado.';
+                erroDiv.style.display = 'block';
+            }
         }
     } catch (error) {
-        erroDiv.textContent = 'Erro de conexão com o servidor.';
-        erroDiv.style.display = 'block';
-        btn.textContent = 'Acessar Painel';
-        btn.disabled = false;
+        if (erroDiv) {
+            erroDiv.textContent = 'Erro de conexão com o servidor.';
+            erroDiv.style.display = 'block';
+        }
     }
-});
+}
