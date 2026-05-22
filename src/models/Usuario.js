@@ -18,7 +18,7 @@ const Usuario = sequelize.define('Usuario', {
     },
     senha: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
     },
     tipo_perfil: {
         type: DataTypes.ENUM('Admin', 'Comum'),
