@@ -1,5 +1,12 @@
 const API_URL = '/api';
 
+function escapeHTML(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
+}
+
 function mudarAba(abaId) {
     document.querySelectorAll('.aba-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -29,7 +36,7 @@ async function carregarCarrinhos() {
     carrinhos.forEach(c => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <span>${c.descricao} (QTD: ${c.capacidade_total})</span>
+            <span>${escapeHTML(c.descricao)} (QTD: ${c.capacidade_total})</span>
             <button class="btn-del" onclick="deletarCarrinho(${c.id_carrinho})">X</button>
         `;
         lista.appendChild(li);
@@ -58,7 +65,7 @@ function renderizarTabsChromebooks() {
     const grupos = {};
     chromebooksData.forEach(c => {
         const id = c.id_carrinho || 'sem-carrinho';
-        const desc = c.Carrinho ? c.Carrinho.descricao : 'Sem Carrinho';
+        const desc = c.Carrinho ? escapeHTML(c.Carrinho.descricao) : 'Sem Carrinho';
         if (!grupos[id]) grupos[id] = { id, desc, itens: [] };
         grupos[id].itens.push(c);
     });
@@ -101,8 +108,8 @@ function renderizarTabsChromebooks() {
         const serieInfo = c.numero_serie ? c.numero_serie : 'N/A';
         const patInfo = c.id_patrimonio ? c.id_patrimonio : 'N/A';
         li.innerHTML = `
-            <div class="info-serie">Série: ${serieInfo}</div>
-            <div class="info-pat">Pat: ${patInfo}</div>
+            <div class="info-serie">Série: ${escapeHTML(serieInfo)}</div>
+            <div class="info-pat">Pat: ${escapeHTML(patInfo)}</div>
             <button class="btn-del" onclick="deletarChromebook(${c.id_chromebook})" title="Deletar">X</button>
         `;
         lista.appendChild(li);
@@ -176,7 +183,7 @@ async function carregarReservas(status = '', data = '') {
     reservas.forEach(r => {
         const li = document.createElement('li');
         li.classList.add('reserva-item');
-        const carrinho = r.Carrinho ? r.Carrinho.descricao : 'Individual';
+        const carrinho = r.Carrinho ? escapeHTML(r.Carrinho.descricao) : 'Individual';
         const tipo = r.tipo_reserva === 'carrinho' ? '🛒 Carrinho' : '💻 Individual';
 
         let statusBadge;
@@ -191,8 +198,8 @@ async function carregarReservas(status = '', data = '') {
 
         li.innerHTML = `
             <div class="reserva-info">
-                <strong>${r.nome_professor}</strong>
-                <span>Sala: ${r.sala} | ${carrinho} | ${r.data_reserva}</span>
+                <strong>${escapeHTML(r.nome_professor)}</strong>
+                <span>Sala: ${escapeHTML(r.sala)} | ${carrinho} | ${r.data_reserva}</span>
                 <span>${r.horario_inicio} – ${r.horario_fim} | ${tipo}</span>
             </div>
             <div class="reserva-acoes">
@@ -231,10 +238,10 @@ async function carregarChromebooksEscaneados(id_reserva) {
                 const cb = item.Chromebook;
                 const isDeslocado = item.status === 'deslocado';
                 return `<li class="scan-device-item ${isDeslocado ? 'deslocado' : ''}">  
-                    <span class="scan-device-pat">Pat: <strong>${cb ? cb.id_patrimonio : 'N/A'}</strong></span>
+                    <span class="scan-device-pat">Pat: <strong>${cb ? escapeHTML(cb.id_patrimonio) : 'N/A'}</strong></span>
                     <span class="scan-device-serie">
-                        Série: ${cb ? cb.numero_serie : 'N/A'}
-                        <strong style="margin-left: 8px; color: var(--color-primary);">[${cb && cb.Carrinho ? cb.Carrinho.descricao : 'Sem Carrinho'}]</strong>
+                        Série: ${cb ? escapeHTML(cb.numero_serie) : 'N/A'}
+                        <strong style="margin-left: 8px; color: var(--color-primary);">[${cb && cb.Carrinho ? escapeHTML(cb.Carrinho.descricao) : 'Sem Carrinho'}]</strong>
                     </span>
                     ${isDeslocado ? '<span class="badge-deslocado">⚠️ Deslocado</span>' : '<span class="badge-entregue">✅ Entregue</span>'}
                 </li>`;

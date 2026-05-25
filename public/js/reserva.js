@@ -39,9 +39,14 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
         quantidade_chromebooks: tipoSelecionado === 'individual' ? document.getElementById('quantidade').value : null
     };
 
+    const token = localStorage.getItem('professorToken');
+
     const res = await fetch(`${API_URL}/reservas`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+        },
         body: JSON.stringify(body)
     });
 
@@ -117,16 +122,59 @@ async function carregarAgenda(data) {
     
     reservas.forEach(r => {
         const tr = document.createElement('tr');
-        const horario = `${r.horario_inicio.slice(0,5)} às ${r.horario_fim.slice(0,5)}`;
-        const equipamento = r.tipo_reserva === 'carrinho' 
+        
+        const tdHorario = document.createElement('td');
+        const strongHorario = document.createElement('strong');
+        strongHorario.textContent = `${r.horario_inicio.slice(0,5)} às ${r.horario_fim.slice(0,5)}`;
+        tdHorario.appendChild(strongHorario);
+        
+        const tdEquip = document.createElement('td');
+        tdEquip.textContent = r.tipo_reserva === 'carrinho' 
             ? `🛒 ${r.Carrinho ? r.Carrinho.descricao : 'Carrinho'}` 
             : `💻 ${r.quantidade_chromebooks} Chromebook(s)`;
+            
+        const tdSala = document.createElement('td');
+        tdSala.textContent = r.sala; // Seguro contra XSS!
         
-        tr.innerHTML = `
-            <td><strong>${horario}</strong></td>
-            <td>${equipamento}</td>
-            <td>${r.sala}</td>
-        `;
+        tr.appendChild(tdHorario);
+        tr.appendChild(tdEquip);
+        tr.appendChild(tdSala);
+        
         tbody.appendChild(tr);
     });
 }
+
+// Callback do Google (Página de Solicitação)
+async function handleCredentialResponseReserva(response) {
+    const msgErro = document.getElementById('msg-erro');
+    if (msgErro) msgErro.style.display = 'none';
+
+    try {
+        const res = await fetch(`${API_URL}/auth/google`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ credential: response.credential })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            // Salvar token e preparar formulário
+            localStorage.setItem('professorToken', data.token);
+            document.getElementById('google-login-container').style.display = 'none';
+            document.getElementById('form-reserva').style.display = 'block';
+            document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
+            
+            // Travar o nome do professor baseado no Google
+            const inputNome = document.getElementById('nome_professor');
+            inputNome.value = data.nome || 'Professor';
+        } else {
+            msgErro.textContent = `❌ ${data.erro || 'Acesso negado.'}`;
+            msgErro.style.display = 'block';
+        }
+    } catch (error) {
+        msgErro.textContent = '❌ Erro de conexão com o servidor.';
+        msgErro.style.display = 'block';
+    }
+}
+
