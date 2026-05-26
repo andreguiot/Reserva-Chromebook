@@ -48,7 +48,7 @@ class AuthController {
                 { expiresIn: '8h' }
             );
 
-            return res.json({ success: true, token, role: usuario.tipo_perfil });
+            return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome });
         } catch (error) {
             console.error('Erro no login via Google:', error);
             return res.status(500).json({ success: false, erro: 'Erro na validação do login com Google.' });

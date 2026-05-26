@@ -177,7 +177,7 @@ async function handleCredentialResponseReserva(response) {
             document.getElementById('form-reserva').classList.remove('d-none');
             document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
 
-            document.getElementById('nome_professor').value = data.nome || 'Professor';
+            document.getElementById('nome_professor').value = data.nome;
         } else {
             msgErro.textContent = `❌ ${data.erro || 'Acesso negado.'}`;
             msgErro.classList.remove('d-none');

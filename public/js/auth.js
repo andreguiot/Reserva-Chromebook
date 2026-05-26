@@ -3,7 +3,7 @@ const API_URL = '/api';
 // Função chamada automaticamente pelo Google após o login bem-sucedido no popup
 async function handleCredentialResponse(response) {
     const erroDiv = document.getElementById('erro-login');
-    if (erroDiv) erroDiv.style.display = 'none';
+    if (erroDiv) erroDiv.classList.add('d-none');
 
     try {
         const res = await fetch(`${API_URL}/auth/google`, {
@@ -25,19 +25,19 @@ async function handleCredentialResponse(response) {
             } else {
                 if (erroDiv) {
                     erroDiv.textContent = 'Acesso negado. Apenas administradores podem acessar o painel.';
-                    erroDiv.style.display = 'block';
+                    erroDiv.classList.remove('d-none');
                 }
             }
         } else {
             if (erroDiv) {
                 erroDiv.textContent = data.erro || 'Acesso negado.';
-                erroDiv.style.display = 'block';
+                erroDiv.classList.remove('d-none');
             }
         }
     } catch (error) {
         if (erroDiv) {
             erroDiv.textContent = 'Erro de conexão com o servidor.';
-            erroDiv.style.display = 'block';
+            erroDiv.classList.remove('d-none');
         }
     }
 }

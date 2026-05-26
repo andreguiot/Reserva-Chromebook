@@ -10,7 +10,7 @@ async function verificarAtrasadas() {
         { status: 'atrasada' },
         {
             where: {
-                status: 'ativa',
+                status: { [Op.in]: ['ativa', 'pendente'] }, 
                 [Op.or]: [
                     { data_reserva: { [Op.lt]: hojeStr } },
                     {
@@ -56,6 +56,8 @@ class ReservaController {
     async criar(req, res) {
         try {
             const { tipo_reserva, id_carrinho, quantidade_chromebooks, sala, nome_professor, data_reserva, horario_inicio, horario_fim } = req.body;
+            // O email de quem está logado vem do token JWT (via authMiddleware)
+            const email_solicitante = req.usuario ? req.usuario.email : null;
 
             const hoje = new Date();
             hoje.setHours(0, 0, 0, 0);
@@ -81,7 +83,8 @@ class ReservaController {
 
             const novaReserva = await Reserva.create({
                 tipo_reserva, id_carrinho, quantidade_chromebooks,
-                sala, nome_professor, data_reserva, horario_inicio, horario_fim,
+                sala, nome_professor, email_solicitante,
+                data_reserva, horario_inicio, horario_fim,
                 status: 'pendente'
             });
             return res.status(201).json(novaReserva);

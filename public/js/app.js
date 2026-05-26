@@ -228,6 +228,13 @@ async function carregarReservas(status = '', data = '') {
         clone.querySelector('.reserva-horario').textContent = `${r.horario_inicio} – ${r.horario_fim} | ${tipo}`;
         clone.querySelector('.badge-status').textContent = statusBadge;
 
+        const solicitanteEl = clone.querySelector('.reserva-solicitante');
+        if (r.email_solicitante) {
+            solicitanteEl.textContent = `📧 Solicitado por: ${r.email_solicitante}`;
+        } else {
+            solicitanteEl.remove();
+        }
+
         const btnDev = clone.querySelector('.btn-devolucao');
         if (r.status === 'ativa' || r.status === 'atrasada') {
             btnDev.addEventListener('click', (ev) => encerrarReserva(r.id_reserva, ev));

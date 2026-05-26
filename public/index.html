@@ -14,8 +14,7 @@
 <body>
     <header>
         <div class="logo-area">
-            <img src="images/logo-abel.png"
-                alt="Colégio La Salle Abel" class="logo-img">
+            <img src="images/logo-abel.png" alt="Colégio La Salle Abel" class="logo-img">
             <p>Sistema de Reservas</p>
         </div>
         <button type="button" id="btn-ver-tabela" class="link-admin">📅 Ver Tabela de Horários</button>
@@ -29,26 +28,19 @@
             <!-- Configuração do Google Identity para Reservas -->
             <div id="google-login-container" class="text-center p-y-20">
                 <div id="g_id_onload"
-                     data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com"
-                     data-context="signin"
-                     data-ux_mode="popup"
-                     data-callback="handleCredentialResponseReserva"
-                     data-auto_prompt="false">
+                    data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com"
+                    data-context="signin" data-ux_mode="popup" data-callback="handleCredentialResponseReserva"
+                    data-auto_prompt="false">
                 </div>
-                <div class="g_id_signin flex-center"
-                     data-type="standard"
-                     data-shape="rectangular"
-                     data-theme="outline"
-                     data-text="signin_with"
-                     data-size="large"
-                     data-logo_alignment="left">
+                <div class="g_id_signin flex-center" data-type="standard" data-shape="rectangular" data-theme="outline"
+                    data-text="signin_with" data-size="large" data-logo_alignment="left">
                 </div>
             </div>
 
             <form id="form-reserva" class="d-none">
                 <div class="campo-grupo">
-                    <label for="nome_professor">Professor</label>
-                    <input type="text" id="nome_professor" readonly required class="input-readonly">
+                    <label for="nome_professor">Nome</label>
+                    <input type="text" id="nome_professor" required>
                 </div>
 
                 <div class="campo-grupo">
@@ -140,7 +132,7 @@
         <template id="tpl-carrinho-opt">
             <option value=""></option>
         </template>
-        
+
         <template id="tpl-agenda-row">
             <tr>
                 <td class="td-horario"><strong></strong></td>
@@ -151,4 +143,5 @@
 
         <script src="js/reserva.js"></script>
 </body>
+
 </html>

@@ -27,6 +27,10 @@ const Reserva = sequelize.define('Reserva', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    email_solicitante: {
+        type: DataTypes.STRING,
+        allowNull: true // Reservas antigas podem não ter este campo
+    },
     data_reserva: {
         type: DataTypes.DATEONLY,
         allowNull: false

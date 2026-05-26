@@ -84,10 +84,18 @@
     color: var(--color-text-primary);
 }
 
+.reserva-solicitante {
+    font-size: 11px;
+    color: #aaa;
+    font-style: italic;
+}
+
 .reserva-acoes {
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: flex-end;
+    gap: 16px;
+    min-width: 220px;
 }
 
 .reserva-item {
