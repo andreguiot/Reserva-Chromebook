@@ -1,11 +1,7 @@
-/* 
- * Colégio La Salle Abel - Sistema de Reservas
- * Arquivo Principal de Estilos (Maestro)
- */
-
 /* Módulos Base Globais */
 @import url('base/variables.css');
 @import url('base/reset.css');
+@import url('base/utilities.css');
 
 /* Módulos de Layout Global */
 @import url('layout/header.css');

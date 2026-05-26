@@ -27,7 +27,7 @@
             <p class="subtitulo" id="reserva-subtitulo">Autentique-se com sua conta institucional para solicitar.</p>
 
             <!-- Configuração do Google Identity para Reservas -->
-            <div id="google-login-container" style="text-align: center; padding: 20px 0;">
+            <div id="google-login-container" class="text-center p-y-20">
                 <div id="g_id_onload"
                      data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com"
                      data-context="signin"
@@ -35,7 +35,7 @@
                      data-callback="handleCredentialResponseReserva"
                      data-auto_prompt="false">
                 </div>
-                <div class="g_id_signin" style="display: flex; justify-content: center;"
+                <div class="g_id_signin flex-center"
                      data-type="standard"
                      data-shape="rectangular"
                      data-theme="outline"
@@ -45,10 +45,10 @@
                 </div>
             </div>
 
-            <form id="form-reserva" style="display: none;">
+            <form id="form-reserva" class="d-none">
                 <div class="campo-grupo">
                     <label for="nome_professor">Professor</label>
-                    <input type="text" id="nome_professor" readonly required style="background-color: #f0f0f0; cursor: not-allowed; border: 1px solid #ddd;">
+                    <input type="text" id="nome_professor" readonly required class="input-readonly">
                 </div>
 
                 <div class="campo-grupo">
@@ -90,7 +90,7 @@
                     <select id="select-carrinho-reserva" required></select>
                 </div>
 
-                <div id="opcao-individual" class="campo-grupo" style="display: none;">
+                <div id="opcao-individual" class="campo-grupo d-none">
                     <label for="quantidade">Quantidade de Chromebooks</label>
                     <input type="number" id="quantidade" placeholder="Ex: 5" min="1">
                 </div>
@@ -98,11 +98,10 @@
                 <button type="submit" class="btn-yellow btn-submit">Enviar Solicitação</button>
             </form>
 
-            <div id="msg-sucesso" class="msg-sucesso" style="display: none;">
+            <div id="msg-sucesso" class="msg-sucesso d-none">
                 ✅ Reserva solicitada com sucesso! Valide sua reserva para a retirada.
             </div>
-            <div id="msg-erro" class="msg-erro"
-                style="display: none; background-color: #ffebee; color: #c62828; padding: 12px; border-radius: 4px; border-left: 4px solid #c62828; margin-top: 16px; font-weight: 500;">
+            <div id="msg-erro" class="msg-erro d-none msg-erro-card m-t-16">
             </div>
         </div>
         <!-- Modal de Tabela de Horários -->
@@ -115,7 +114,7 @@
 
                 <div class="campo-grupo">
                     <label for="filtro-data-agenda">Consultar Data</label>
-                    <input type="date" id="filtro-data-agenda" style="width: auto; max-width: 200px;">
+                    <input type="date" id="filtro-data-agenda" class="w-auto-max-200">
                 </div>
 
                 <table class="tabela-reservas">
@@ -130,7 +129,7 @@
                         <!-- Linhas injetadas via JS -->
                     </tbody>
                 </table>
-                <div id="msg-sem-reservas" class="sem-reservas" style="display: none;">
+                <div id="msg-sem-reservas" class="sem-reservas d-none">
                     Nenhuma reserva bloqueando horários nesta data.
                 </div>
             </div>
