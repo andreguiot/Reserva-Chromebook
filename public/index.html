@@ -105,7 +105,7 @@
             </div>
         </div>
         <!-- Modal de Tabela de Horários -->
-        <div id="modal-agenda" class="modal">
+        <div id="modal-agenda" class="modal d-none">
             <div class="modal-content">
                 <div class="modal-header">
                     <h3>Agenda de Reservas</h3>
@@ -137,7 +137,18 @@
 
 
 
+        <template id="tpl-carrinho-opt">
+            <option value=""></option>
+        </template>
+        
+        <template id="tpl-agenda-row">
+            <tr>
+                <td class="td-horario"><strong></strong></td>
+                <td class="td-equip"></td>
+                <td class="td-sala"></td>
+            </tr>
+        </template>
+
         <script src="js/reserva.js"></script>
 </body>
-
 </html>

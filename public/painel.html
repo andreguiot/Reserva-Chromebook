@@ -61,7 +61,7 @@
         </section>
 
         <!-- ABA: CADASTRAR DISPOSITIVOS -->
-        <section id="aba-dispositivos" class="aba-content d-none">
+        <section id="aba-dispositivos" class="aba-content">
             <div class="grid-2">
                 <!-- Seção Carrinhos -->
                 <div class="panel">
@@ -96,6 +96,53 @@
         </section>
 
     </main>
+
+    <!-- Templates para injeção dinâmica via JS -->
+
+    <!-- Template: Item de Carrinho na lista de carrinhos -->
+    <template id="tpl-carrinho-item">
+        <li>
+            <span class="carrinho-descricao"></span>
+            <button class="btn-del">X</button>
+        </li>
+    </template>
+
+    <!-- Template: Item de Chromebook no grid -->
+    <template id="tpl-chromebook-item">
+        <li>
+            <div class="info-serie"></div>
+            <div class="info-pat"></div>
+            <button class="btn-del" title="Deletar">X</button>
+        </li>
+    </template>
+
+    <!-- Template: Item de Reserva na lista -->
+    <template id="tpl-reserva-item">
+        <li class="reserva-item">
+            <div class="reserva-info">
+                <strong class="reserva-professor"></strong>
+                <span class="reserva-detalhes"></span>
+                <span class="reserva-horario"></span>
+            </div>
+            <div class="reserva-acoes">
+                <span class="badge-status"></span>
+                <button class="btn-dev btn-devolucao">Registrar Devolução</button>
+            </div>
+        </li>
+    </template>
+
+    <!-- Template: Painel de dispositivo escaneado -->
+    <template id="tpl-scan-vazio">
+        <p class="scan-hint m-t-8">Nenhum dispositivo registrado ainda.</p>
+    </template>
+
+    <template id="tpl-scan-device">
+        <li class="scan-device-item">
+            <span class="scan-device-pat"></span>
+            <span class="scan-device-serie"></span>
+            <span class="scan-badge"></span>
+        </li>
+    </template>
 
     <script src="js/app.js"></script>
 </body>

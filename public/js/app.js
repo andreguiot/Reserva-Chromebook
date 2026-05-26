@@ -1,19 +1,6 @@
 const API_URL = '/api';
 
-function escapeHTML(str) {
-    if (!str) return '';
-    return String(str).replace(/[&<>'"]/g, tag => ({
-        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    }[tag] || tag));
-}
-
-function mudarAba(abaId) {
-    document.querySelectorAll('.aba-content').forEach(el => el.style.display = 'none');
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-    document.getElementById('aba-' + abaId).style.display = 'block';
-    event.currentTarget.classList.add('active');
-}
+// --- Utilitários ---
 
 function getAuthHeaders() {
     const token = localStorage.getItem('adminToken');
@@ -23,6 +10,26 @@ function getAuthHeaders() {
     };
 }
 
+function clonar(templateId) {
+    return document.getElementById(templateId).content.cloneNode(true);
+}
+
+function limparEl(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+}
+
+// --- Abas ---
+
+function mudarAba(abaId) {
+    document.querySelectorAll('.aba-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+    document.getElementById('aba-' + abaId).classList.add('active');
+    event.currentTarget.classList.add('active');
+}
+
+// --- Carrinhos ---
+
 async function carregarCarrinhos() {
     const res = await fetch(`${API_URL}/carrinhos`);
     const carrinhos = await res.json();
@@ -30,23 +37,32 @@ async function carregarCarrinhos() {
     const lista = document.getElementById('lista-carrinhos');
     const select = document.getElementById('select-carrinho');
 
-    lista.innerHTML = '';
-    select.innerHTML = '<option value="">Selecione o Carrinho</option>';
+    limparEl(lista);
+
+    // Resetar o select mantendo o placeholder
+    limparEl(select);
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = 'Selecione o Carrinho';
+    select.appendChild(placeholder);
 
     carrinhos.forEach(c => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span>${escapeHTML(c.descricao)} (QTD: ${c.capacidade_total})</span>
-            <button class="btn-del" onclick="deletarCarrinho(${c.id_carrinho})">X</button>
-        `;
-        lista.appendChild(li);
+        // Item da lista
+        const clone = clonar('tpl-carrinho-item');
+        clone.querySelector('.carrinho-descricao').textContent = `${c.descricao} (QTD: ${c.capacidade_total})`;
+        const btnDel = clone.querySelector('.btn-del');
+        btnDel.addEventListener('click', () => deletarCarrinho(c.id_carrinho));
+        lista.appendChild(clone);
 
+        // Option do select
         const option = document.createElement('option');
         option.value = c.id_carrinho;
         option.textContent = c.descricao;
         select.appendChild(option);
     });
 }
+
+// --- Chromebooks ---
 
 let chromebooksData = [];
 let abaCarrinhoAtiva = null;
@@ -60,20 +76,25 @@ async function carregarChromebooks() {
 function renderizarTabsChromebooks() {
     const tabsContainer = document.getElementById('chromebooks-tabs');
     const lista = document.getElementById('lista-chromebooks');
-    
+
     // Agrupar por carrinho
     const grupos = {};
     chromebooksData.forEach(c => {
         const id = c.id_carrinho || 'sem-carrinho';
-        const desc = c.Carrinho ? escapeHTML(c.Carrinho.descricao) : 'Sem Carrinho';
+        const desc = c.Carrinho ? c.Carrinho.descricao : 'Sem Carrinho';
         if (!grupos[id]) grupos[id] = { id, desc, itens: [] };
         grupos[id].itens.push(c);
     });
 
     const chaves = Object.keys(grupos);
+    limparEl(tabsContainer);
+
     if (chaves.length === 0) {
-        tabsContainer.innerHTML = '';
-        lista.innerHTML = '<li><span>Nenhum chromebook cadastrado</span></li>';
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.textContent = 'Nenhum chromebook cadastrado';
+        li.appendChild(span);
+        lista.appendChild(li);
         return;
     }
 
@@ -82,39 +103,41 @@ function renderizarTabsChromebooks() {
     }
 
     // Renderizar Tabs
-    tabsContainer.innerHTML = '';
     chaves.forEach(id => {
         const btn = document.createElement('button');
         btn.textContent = grupos[id].desc;
         btn.className = id === abaCarrinhoAtiva ? 'tab-chromebook active' : 'tab-chromebook';
-        btn.onclick = () => {
+        btn.addEventListener('click', () => {
             abaCarrinhoAtiva = id;
             renderizarTabsChromebooks();
-        };
+        });
         tabsContainer.appendChild(btn);
     });
 
     // Renderizar Lista do Carrinho Ativo
-    lista.innerHTML = '';
+    limparEl(lista);
     const itensAtivos = grupos[abaCarrinhoAtiva].itens;
-    
+
     if (itensAtivos.length === 0) {
-        lista.innerHTML = '<li><span>Nenhum dispositivo neste carrinho</span></li>';
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.textContent = 'Nenhum dispositivo neste carrinho';
+        li.appendChild(span);
+        lista.appendChild(li);
         return;
     }
 
     itensAtivos.forEach(c => {
-        const li = document.createElement('li');
-        const serieInfo = c.numero_serie ? c.numero_serie : 'N/A';
-        const patInfo = c.id_patrimonio ? c.id_patrimonio : 'N/A';
-        li.innerHTML = `
-            <div class="info-serie">Série: ${escapeHTML(serieInfo)}</div>
-            <div class="info-pat">Pat: ${escapeHTML(patInfo)}</div>
-            <button class="btn-del" onclick="deletarChromebook(${c.id_chromebook})" title="Deletar">X</button>
-        `;
-        lista.appendChild(li);
+        const clone = clonar('tpl-chromebook-item');
+        clone.querySelector('.info-serie').textContent = `Série: ${c.numero_serie || 'N/A'}`;
+        clone.querySelector('.info-pat').textContent = `Pat: ${c.id_patrimonio || 'N/A'}`;
+        const btnDel = clone.querySelector('.btn-del');
+        btnDel.addEventListener('click', () => deletarChromebook(c.id_chromebook));
+        lista.appendChild(clone);
     });
 }
+
+// --- Formulários ---
 
 document.getElementById('form-carrinho').addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -147,6 +170,8 @@ document.getElementById('form-chromebook').addEventListener('submit', async (e) 
     carregarChromebooks();
 });
 
+// --- Deleções ---
+
 async function deletarCarrinho(id) {
     if (confirm('Deletar este carrinho?')) {
         await fetch(`${API_URL}/carrinhos/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
@@ -161,6 +186,8 @@ async function deletarChromebook(id) {
     }
 }
 
+// --- Reservas ---
+
 let reservaSelecionadaId = null;
 let reservaSelecionadaTipo = null;
 
@@ -173,17 +200,21 @@ async function carregarReservas(status = '', data = '') {
     const reservas = await res.json();
 
     const lista = document.getElementById('lista-reservas');
-    lista.innerHTML = '';
+    limparEl(lista);
 
     if (reservas.length === 0) {
-        lista.innerHTML = '<li><span>(Nenhuma reserva encontrada)</span></li>';
+        const li = document.createElement('li');
+        const span = document.createElement('span');
+        span.textContent = '(Nenhuma reserva encontrada)';
+        li.appendChild(span);
+        lista.appendChild(li);
         return;
     }
 
     reservas.forEach(r => {
-        const li = document.createElement('li');
-        li.classList.add('reserva-item');
-        const carrinho = r.Carrinho ? escapeHTML(r.Carrinho.descricao) : 'Individual';
+        const clone = clonar('tpl-reserva-item');
+
+        const carrinho = r.Carrinho ? r.Carrinho.descricao : 'Individual';
         const tipo = r.tipo_reserva === 'carrinho' ? '🛒 Carrinho' : '💻 Individual';
 
         let statusBadge;
@@ -192,25 +223,25 @@ async function carregarReservas(status = '', data = '') {
         else if (r.status === 'atrasada') statusBadge = '🔴 Atrasada';
         else statusBadge = '⚫ Encerrada';
 
-        const btnDevolucao = (r.status === 'ativa' || r.status === 'atrasada')
-            ? `<button class="btn-dev" onclick="encerrarReserva(${r.id_reserva}, event)">Registrar Devolução</button>`
-            : '';
+        clone.querySelector('.reserva-professor').textContent = r.nome_professor;
+        clone.querySelector('.reserva-detalhes').textContent = `Sala: ${r.sala} | ${carrinho} | ${r.data_reserva}`;
+        clone.querySelector('.reserva-horario').textContent = `${r.horario_inicio} – ${r.horario_fim} | ${tipo}`;
+        clone.querySelector('.badge-status').textContent = statusBadge;
 
-        li.innerHTML = `
-            <div class="reserva-info">
-                <strong>${escapeHTML(r.nome_professor)}</strong>
-                <span>Sala: ${escapeHTML(r.sala)} | ${carrinho} | ${r.data_reserva}</span>
-                <span>${r.horario_inicio} – ${r.horario_fim} | ${tipo}</span>
-            </div>
-            <div class="reserva-acoes">
-                <span class="badge-status">${statusBadge}</span>
-                ${btnDevolucao}
-            </div>
-        `;
+        const btnDev = clone.querySelector('.btn-devolucao');
+        if (r.status === 'ativa' || r.status === 'atrasada') {
+            btnDev.addEventListener('click', (ev) => encerrarReserva(r.id_reserva, ev));
+        } else {
+            btnDev.remove();
+        }
+
+        const li = clone.querySelector('.reserva-item');
         li.addEventListener('click', () => selecionarReserva(li, r));
-        lista.appendChild(li);
+        lista.appendChild(clone);
     });
 }
+
+// --- Seleção e Escaneamento ---
 
 function deselecionarReserva() {
     document.querySelectorAll('.reserva-item').forEach(el => el.classList.remove('selecionada'));
@@ -218,36 +249,54 @@ function deselecionarReserva() {
     reservaSelecionadaTipo = null;
     document.getElementById('scan-patrimonio').value = '';
     document.getElementById('scan-patrimonio').placeholder = 'Selecione uma reserva abaixo';
-    document.getElementById('chromebooks-escaneados').innerHTML = '';
+    limparEl(document.getElementById('chromebooks-escaneados'));
 }
 
 async function carregarChromebooksEscaneados(id_reserva) {
     const res = await fetch(`${API_URL}/reservas/${id_reserva}/chromebooks`, { headers: getAuthHeaders() });
     const itens = await res.json();
     const container = document.getElementById('chromebooks-escaneados');
+    limparEl(container);
 
     if (!itens || itens.length === 0) {
-        container.innerHTML = '<p class="scan-hint" style="margin-top: 8px;">Nenhum dispositivo registrado ainda.</p>';
+        const clone = clonar('tpl-scan-vazio');
+        container.appendChild(clone);
         return;
     }
 
-    container.innerHTML = `
-        <h4 class="scan-devices-title">Dispositivos Registrados (${itens.length})</h4>
-        <ul class="scan-devices-list">
-            ${ itens.map(item => {
-                const cb = item.Chromebook;
-                const isDeslocado = item.status === 'deslocado';
-                return `<li class="scan-device-item ${isDeslocado ? 'deslocado' : ''}">  
-                    <span class="scan-device-pat">Pat: <strong>${cb ? escapeHTML(cb.id_patrimonio) : 'N/A'}</strong></span>
-                    <span class="scan-device-serie">
-                        Série: ${cb ? escapeHTML(cb.numero_serie) : 'N/A'}
-                        <strong style="margin-left: 8px; color: var(--color-primary);">[${cb && cb.Carrinho ? escapeHTML(cb.Carrinho.descricao) : 'Sem Carrinho'}]</strong>
-                    </span>
-                    ${isDeslocado ? '<span class="badge-deslocado">⚠️ Deslocado</span>' : '<span class="badge-entregue">✅ Entregue</span>'}
-                </li>`;
-            }).join('') }
-        </ul>
-    `;
+    const titulo = document.createElement('h4');
+    titulo.className = 'scan-devices-title';
+    titulo.textContent = `Dispositivos Registrados (${itens.length})`;
+    container.appendChild(titulo);
+
+    const ul = document.createElement('ul');
+    ul.className = 'scan-devices-list';
+
+    itens.forEach(item => {
+        const cb = item.Chromebook;
+        const isDeslocado = item.status === 'deslocado';
+
+        const clone = clonar('tpl-scan-device');
+        const li = clone.querySelector('.scan-device-item');
+        if (isDeslocado) li.classList.add('deslocado');
+
+        clone.querySelector('.scan-device-pat').innerHTML = `Pat: <strong>${cb ? cb.id_patrimonio : 'N/A'}</strong>`;
+
+        const serieSpan = clone.querySelector('.scan-device-serie');
+        serieSpan.textContent = `Série: ${cb ? cb.numero_serie : 'N/A'}`;
+        const carrinhoStrong = document.createElement('strong');
+        carrinhoStrong.className = 'serie-carrinho';
+        carrinhoStrong.textContent = `[${cb && cb.Carrinho ? cb.Carrinho.descricao : 'Sem Carrinho'}]`;
+        serieSpan.appendChild(carrinhoStrong);
+
+        const badge = clone.querySelector('.scan-badge');
+        badge.className = isDeslocado ? 'badge-deslocado scan-badge' : 'badge-entregue scan-badge';
+        badge.textContent = isDeslocado ? '⚠️ Deslocado' : '✅ Entregue';
+
+        ul.appendChild(clone);
+    });
+
+    container.appendChild(ul);
 }
 
 function selecionarReserva(li, reserva) {
@@ -258,15 +307,12 @@ function selecionarReserva(li, reserva) {
     reservaSelecionadaTipo = reserva.tipo_reserva;
 
     const input = document.getElementById('scan-patrimonio');
-    if (reserva.tipo_reserva === 'carrinho') {
-        input.placeholder = 'Digite o patrimônio do carrinho';
-    } else {
-        input.placeholder = 'Escaneie o patrimônio do Chromebook';
-    }
+    input.placeholder = reserva.tipo_reserva === 'carrinho'
+        ? 'Digite o patrimônio do carrinho'
+        : 'Escaneie o patrimônio do Chromebook';
     input.value = '';
     input.focus();
 
-    // Carrega dispositivos já registrados para esta reserva
     carregarChromebooksEscaneados(reserva.id_reserva);
 }
 
@@ -307,7 +353,6 @@ async function validarReserva() {
         alert('✅ Validado com sucesso!');
     }
 
-    // Força nova seleção para o próximo dispositivo
     deselecionarReserva();
     aplicarFiltros();
 }
@@ -325,6 +370,8 @@ async function encerrarReserva(id, event) {
     }
 }
 
+// --- Filtros ---
+
 function aplicarFiltros() {
     const status = document.getElementById('filtro-status').value;
     const data = document.getElementById('filtro-data').value;
@@ -337,7 +384,14 @@ function limparFiltros() {
     carregarReservas();
 }
 
+// --- Logout ---
+
+function fazerLogout() {
+    localStorage.removeItem('adminToken');
+    window.location.href = 'admin.html';
+}
+
+// --- Inicialização ---
 carregarCarrinhos();
 carregarChromebooks();
 carregarReservas();
-

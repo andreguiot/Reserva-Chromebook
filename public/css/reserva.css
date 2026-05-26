@@ -101,7 +101,7 @@
 
 /* Estilos do Modal da Tabela de Horários */
 .modal {
-    display: none;
+    display: flex;
     position: fixed;
     z-index: 1000;
     left: 0;
