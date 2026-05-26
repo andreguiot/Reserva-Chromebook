@@ -5,7 +5,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 
 const router = Router();
 
-router.get('/', CarrinhoController.listar); // Publico
+router.get('/', authMiddleware, CarrinhoController.listar); // Protegido
 router.post('/', authMiddleware, adminMiddleware, CarrinhoController.criar); // Protegido
 router.put('/:id', authMiddleware, adminMiddleware, CarrinhoController.atualizar); // Protegido
 router.delete('/:id', authMiddleware, adminMiddleware, CarrinhoController.deletar); // Protegido

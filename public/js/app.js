@@ -31,7 +31,7 @@ function mudarAba(abaId) {
 // --- Carrinhos ---
 
 async function carregarCarrinhos() {
-    const res = await fetch(`${API_URL}/carrinhos`);
+    const res = await fetch(`${API_URL}/carrinhos`, { headers: getAuthHeaders() });
     const carrinhos = await res.json();
 
     const lista = document.getElementById('lista-carrinhos');
@@ -68,7 +68,7 @@ let chromebooksData = [];
 let abaCarrinhoAtiva = null;
 
 async function carregarChromebooks() {
-    const res = await fetch(`${API_URL}/chromebooks`);
+    const res = await fetch(`${API_URL}/chromebooks`, { headers: getAuthHeaders() });
     chromebooksData = await res.json();
     renderizarTabsChromebooks();
 }
@@ -196,7 +196,7 @@ async function carregarReservas(status = '', data = '') {
     if (status) url += `status=${status}&`;
     if (data) url += `data=${data}`;
 
-    const res = await fetch(url);
+    const res = await fetch(url, { headers: getAuthHeaders() });
     const reservas = await res.json();
 
     const lista = document.getElementById('lista-reservas');
@@ -399,6 +399,23 @@ function fazerLogout() {
 }
 
 // --- Inicialização ---
-carregarCarrinhos();
-carregarChromebooks();
-carregarReservas();
+const adminToken = localStorage.getItem('adminToken');
+if (!adminToken) {
+    window.location.href = 'admin.html';
+} else {
+    try {
+        // Decodifica o payload do JWT para verificar a role
+        const payload = JSON.parse(atob(adminToken.split('.')[1]));
+        if (payload.role !== 'Admin') {
+            alert('Acesso negado: Você não tem privilégios de administrador.');
+            localStorage.removeItem('adminToken');
+            window.location.href = 'admin.html';
+        } else {
+            carregarCarrinhos();
+            carregarChromebooks();
+            carregarReservas();
+        }
+    } catch (e) {
+        window.location.href = 'admin.html';
+    }
+}

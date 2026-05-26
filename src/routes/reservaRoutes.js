@@ -5,7 +5,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 
 const router = Router();
 
-router.get('/', ReservaController.listar);
+router.get('/', authMiddleware, ReservaController.listar);
 router.post('/', authMiddleware, ReservaController.criar);
 router.get('/:id/chromebooks', authMiddleware, ReservaController.listarChromebooks);
 router.post('/:id/escanear', authMiddleware, adminMiddleware, ReservaController.escanear);

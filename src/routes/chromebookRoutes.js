@@ -5,7 +5,7 @@ const adminMiddleware = require('../middlewares/adminMiddleware');
 
 const router = Router();
 
-router.get('/', ChromebookController.listar); // Publico
+router.get('/', authMiddleware, ChromebookController.listar); // Protegido
 router.post('/', authMiddleware, adminMiddleware, ChromebookController.criar); // Protegido
 router.put('/:id', authMiddleware, adminMiddleware, ChromebookController.atualizar); // Protegido
 router.delete('/:id', authMiddleware, adminMiddleware, ChromebookController.deletar); // Protegido
