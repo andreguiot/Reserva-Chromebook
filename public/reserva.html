@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitar Reserva - La Salle Abel</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reserva.css">
+    <link rel="stylesheet" href="css/reserva.css">
+</head>
+
+<body>
+    <header>
+        <div class="logo-area">
+            <img src="images/logo-abel.png" alt="Colégio La Salle Abel" class="logo-img">
+            <p>Sistema de Reservas</p>
+        </div>
+        <button type="button" id="btn-ver-tabela" class="link-admin">📅 Ver Tabela de Horários</button>
+    </header>
+
+    <main class="reserva-container">
+        <div class="reserva-card">
+            <h2>Solicitar Reserva de Chromebooks</h2>
+            <p class="subtitulo" id="reserva-subtitulo">Preencha o formulário abaixo para solicitar o carrinho.</p>
+
+            <form id="form-reserva">
+                <div class="campo-grupo">
+                    <label for="nome_professor">Nome</label>
+                    <input type="text" id="nome_professor" required>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="sala">Sala / Local de uso</label>
+                    <input type="text" id="sala" required>
+                </div>
+
+                <div class="linha-dupla">
+                    <div class="campo-grupo">
+                        <label for="data_reserva">Data</label>
+                        <input type="date" id="data_reserva" required>
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="horario_inicio">Horário Início</label>
+                        <input type="time" id="horario_inicio" required>
+                    </div>
+                    <div class="campo-grupo">
+                        <label for="horario_fim">Horário Fim</label>
+                        <input type="time" id="horario_fim" required>
+                    </div>
+                </div>
+
+                <div class="campo-grupo">
+                    <label>Tipo de Reserva</label>
+                    <div class="tipo-selector">
+                        <button type="button" class="tipo-btn active" id="btn-carrinho"
+                            onclick="selecionarTipo('carrinho')">
+                            Carrinho Inteiro
+                        </button>
+                        <button type="button" class="tipo-btn" id="btn-individual"
+                            onclick="selecionarTipo('individual')">
+                            Chromebooks Individuais
+                        </button>
+                    </div>
+                </div>
+
+                <div id="opcao-carrinho" class="campo-grupo">
+                    <label for="select-carrinho-reserva">Selecionar Carrinho</label>
+                    <select id="select-carrinho-reserva" required></select>
+                </div>
+
+                <div id="opcao-individual" class="campo-grupo d-none">
+                    <label for="quantidade">Quantidade de Chromebooks</label>
+                    <input type="number" id="quantidade" placeholder="Ex: 5" min="1">
+                </div>
+
+                <button type="submit" class="btn-yellow btn-submit">Enviar Solicitação</button>
+            </form>
+
+            <div id="msg-sucesso" class="msg-sucesso d-none">
+                ✅ Reserva solicitada com sucesso! Valide sua reserva para a retirada.
+            </div>
+            <div id="msg-erro" class="msg-erro d-none msg-erro-card m-t-16">
+            </div>
+        </div>
+        <!-- Modal de Tabela de Horários -->
+        <div id="modal-agenda" class="modal d-none">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Agenda de Reservas</h3>
+                    <button type="button" class="close-btn" id="btn-fechar-modal">&times;</button>
+                </div>
+
+                <div class="campo-grupo">
+                    <label for="filtro-data-agenda">Consultar Data</label>
+                    <input type="date" id="filtro-data-agenda" class="w-auto-max-200">
+                </div>
+
+                <table class="tabela-reservas">
+                    <thead>
+                        <tr>
+                            <th>Horário</th>
+                            <th>Equipamento</th>
+                            <th>Local / Sala</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-agenda">
+                        <!-- Linhas injetadas via JS -->
+                    </tbody>
+                </table>
+                <div id="msg-sem-reservas" class="sem-reservas d-none">
+                    Nenhuma reserva bloqueando horários nesta data.
+                </div>
+            </div>
+        </div>
+
+
+
+        <template id="tpl-carrinho-opt">
+            <option value=""></option>
+        </template>
+
+        <template id="tpl-agenda-row">
+            <tr>
+                <td class="td-horario"><strong></strong></td>
+                <td class="td-equip"></td>
+                <td class="td-sala"></td>
+            </tr>
+        </template>
+
+        <script src="js/reserva.js"></script>
+</body>
+
+</html>

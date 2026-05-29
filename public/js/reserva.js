@@ -106,10 +106,9 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 
 // --- Inicialização ---
 const tokenSalvo = localStorage.getItem('professorToken');
-if (tokenSalvo) {
-    document.getElementById('google-login-container').classList.add('d-none');
-    document.getElementById('form-reserva').classList.remove('d-none');
-    document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
+if (!tokenSalvo) {
+    window.location.href = 'logintela.html';
+} else {
     carregarCarrinhosDisponiveis();
 }
 
@@ -193,37 +192,4 @@ async function carregarAgenda(data) {
         clone.querySelector('.td-sala').textContent = r.sala;
         tbody.appendChild(clone);
     });
-}
-
-// --- Callback Google (login na tela de reservas) ---
-
-async function handleCredentialResponseReserva(response) {
-    const msgErro = document.getElementById('msg-erro');
-    if (msgErro) msgErro.classList.add('d-none');
-
-    try {
-        const res = await fetch(`${API_URL}/auth/google`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ credential: response.credential })
-        });
-
-        const data = await res.json();
-
-        if (data.success) {
-            localStorage.setItem('professorToken', data.token);
-            document.getElementById('google-login-container').classList.add('d-none');
-            document.getElementById('form-reserva').classList.remove('d-none');
-            document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
-
-            document.getElementById('nome_professor').value = data.nome;
-            carregarCarrinhosDisponiveis();
-        } else {
-            msgErro.textContent = `❌ ${data.erro || 'Acesso negado.'}`;
-            msgErro.classList.remove('d-none');
-        }
-    } catch (error) {
-        msgErro.textContent = '❌ Erro de conexão com o servidor.';
-        msgErro.classList.remove('d-none');
-    }
 }

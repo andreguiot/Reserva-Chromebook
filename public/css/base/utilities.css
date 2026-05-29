@@ -31,3 +31,24 @@
     cursor: not-allowed;
     border: 1px solid #ddd;
 }
+
+/* Loader Utilitário */
+.h-100vh { height: 100vh; }
+.bg-light { background-color: #f8f9fa; }
+.flex-center-all {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.loader {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #0056b3;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+}
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
