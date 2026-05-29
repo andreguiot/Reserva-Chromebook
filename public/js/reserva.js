@@ -8,7 +8,20 @@ function clonar(templateId) {
 // --- Carrinhos disponíveis ---
 
 async function carregarCarrinhosDisponiveis() {
-    const res = await fetch(`${API_URL}/carrinhos`);
+    const token = localStorage.getItem('professorToken');
+    const res = await fetch(`${API_URL}/carrinhos`, {
+        headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+    });
+    
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('professorToken');
+            alert('Sessão expirada. Faça login novamente.');
+            window.location.reload();
+        }
+        return;
+    }
+
     const carrinhos = await res.json();
     const select = document.getElementById('select-carrinho-reserva');
 
@@ -92,7 +105,14 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 });
 
 // --- Inicialização ---
-carregarCarrinhosDisponiveis();
+const tokenSalvo = localStorage.getItem('professorToken');
+if (tokenSalvo) {
+    document.getElementById('google-login-container').classList.add('d-none');
+    document.getElementById('form-reserva').classList.remove('d-none');
+    document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
+    carregarCarrinhosDisponiveis();
+}
+
 document.getElementById('data_reserva').min = new Date().toISOString().split('T')[0];
 
 // --- Modal de Agenda ---
@@ -126,7 +146,26 @@ inputFiltroData.addEventListener('change', (e) => {
 async function carregarAgenda(data) {
     if (!data) return;
 
-    const res = await fetch(`${API_URL}/reservas?data=${data}`);
+    const token = localStorage.getItem('professorToken');
+    if (!token) {
+        alert('Você precisa estar autenticado para visualizar a agenda.');
+        modalAgenda.classList.add('d-none');
+        return;
+    }
+
+    const res = await fetch(`${API_URL}/reservas?data=${data}`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+    });
+
+    if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('professorToken');
+            alert('Sessão expirada. Faça login novamente.');
+            window.location.reload();
+        }
+        return;
+    }
+
     const reservas = await res.json();
 
     const tbody = document.getElementById('tbody-agenda');
@@ -178,6 +217,7 @@ async function handleCredentialResponseReserva(response) {
             document.getElementById('reserva-subtitulo').textContent = 'Preencha o formulário abaixo.';
 
             document.getElementById('nome_professor').value = data.nome;
+            carregarCarrinhosDisponiveis();
         } else {
             msgErro.textContent = `❌ ${data.erro || 'Acesso negado.'}`;
             msgErro.classList.remove('d-none');
