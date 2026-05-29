@@ -1,0 +1,253 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+/* Esquerda: Formulário */
+.login-left {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 15%;
+    background-color: #ffffff;
+    max-width: 50%;
+    box-sizing: border-box;
+}
+
+.back-link {
+    text-decoration: none;
+    color: #5f6368;
+    margin-bottom: 2rem;
+    display: inline-block;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #1a73e8;
+}
+
+.login-left h1 {
+    font-size: 2rem;
+    color: #4a4a4a;
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #5f6368;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border: 1px solid #dadce0;
+    border-radius: 4px;
+    font-size: 1rem;
+    color: #202124;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+}
+
+.input-wrapper input:focus {
+    border-color: #0088cc;
+    box-shadow: 0 0 0 2px rgba(0, 136, 204, 0.2);
+}
+
+.input-wrapper i.icon-left {
+    position: absolute;
+    left: 12px;
+    color: #9aa0a6;
+    font-size: 1.1rem;
+}
+
+.input-wrapper i.icon-right {
+    position: absolute;
+    right: 12px;
+    color: #9aa0a6;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+
+.options-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.85rem;
+}
+
+.checkbox-group {
+    display: flex;
+    align-items: center;
+    color: #5f6368;
+    cursor: pointer;
+}
+
+.checkbox-group input {
+    margin-right: 8px;
+    cursor: pointer;
+}
+
+.forgot-pwd {
+    color: #0088cc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.forgot-pwd:hover {
+    text-decoration: underline;
+}
+
+.btn-primary {
+    background-color: #0088cc;
+    color: white;
+    border: none;
+    border-radius: 24px;
+    padding: 14px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0077b3;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+.signup-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #5f6368;
+}
+
+.signup-text a {
+    color: #0088cc;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.signup-text a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 2rem 0;
+    color: #5f6368;
+    font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #dadce0;
+}
+
+.divider:not(:empty)::before {
+    margin-right: .5em;
+}
+
+.divider:not(:empty)::after {
+    margin-left: .5em;
+}
+
+.google-btn-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+/* Direita: Imagem/Logo */
+.login-right {
+    flex: 1;
+    background-color: #f5f8fa;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-left: 1px solid #e1e4e8;
+    background-color: #0077b3;
+}
+
+.login-right img {
+    max-width: 60%;
+    filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.1));
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.msg-erro-card {
+    background-color: #fce8e6;
+    color: #d93025;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.msg-sucesso-card {
+    background-color: #e6f4ea;
+    color: #188038;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+/* Responsivo */
+@media (max-width: 900px) {
+    .login-right {
+        display: none;
+    }
+
+    .login-left {
+        max-width: 100%;
+        padding: 40px 10%;
+    }
+}
