@@ -182,6 +182,10 @@
 }
 
 @media (max-width: 600px) {
+    .reserva-container {
+        padding: 1.5rem 0.5rem;
+    }
+
     .linha-dupla {
         grid-template-columns: 1fr;
     }
@@ -191,7 +195,12 @@
     }
 
     .reserva-card {
-        padding: 1.5rem;
+        padding: 1.5rem 1rem;
+        border-radius: 8px;
+    }
+
+    .reserva-card h2 {
+        font-size: 1.25rem;
     }
 
     .tabela-reservas {

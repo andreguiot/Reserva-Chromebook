@@ -67,3 +67,31 @@ header {
         gap: calc(var(--base-unit) * 2);
     }
 }
+
+@media (max-width: 600px) {
+    header {
+        padding: calc(var(--base-unit) * 4);
+    }
+
+    .top-menu {
+        flex-direction: column;
+        width: 100%;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .tab-btn {
+        width: 100%;
+        text-align: center;
+        padding: 12px;
+        background-color: rgba(255, 255, 255, 0.05);
+        border-radius: 6px;
+        border-bottom: none;
+    }
+
+    .tab-btn.active {
+        background-color: var(--color-secondary);
+        color: white;
+        border-bottom: none;
+    }
+}

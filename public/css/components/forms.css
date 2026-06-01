@@ -23,6 +23,8 @@
 /* Inputs conforme o Branding: transparent, text #999999, border-radius 0px, no shadow */
 input,
 select {
+    width: 100%;
+    box-sizing: border-box;
     padding: calc(var(--base-unit) * 3);
     background-color: transparent;
     color: #999999;

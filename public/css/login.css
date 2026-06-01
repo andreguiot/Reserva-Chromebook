@@ -190,12 +190,24 @@ body {
 /* Direita: Imagem/Logo */
 .login-right {
     flex: 1;
-    background-color: #f5f8fa;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     border-left: 1px solid #e1e4e8;
     background-color: #0077b3;
+    gap: 1.5rem;
+}
+
+.branding-title {
+    color: #FFFFFF;
+    font-size: 1.8rem;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-weight: bold;
+    margin: 0;
+    text-align: center;
+    letter-spacing: 0.5px;
+    animation: float 6s ease-in-out infinite;
 }
 
 .login-right img {
@@ -249,5 +261,26 @@ body {
     .login-left {
         max-width: 100%;
         padding: 40px 10%;
+    }
+}
+
+@media (max-width: 600px) {
+    .login-left {
+        padding: 30px 5%;
+    }
+
+    .login-left h1 {
+        font-size: 1.75rem;
+    }
+
+    .options-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .btn-primary {
+        padding: 12px;
+        font-size: 1rem;
     }
 }
