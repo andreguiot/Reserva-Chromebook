@@ -42,14 +42,15 @@ class AuthController {
                 });
             }
 
-            // Gerar token JWT interno da aplicação
+            const precisaDefinirSenha = !usuario.senha;
+
             const token = jwt.sign(
                 { id: usuario.id_usuario, role: usuario.tipo_perfil, nome: usuario.nome, email: usuario.email },
                 process.env.JWT_SECRET || 'chave_super_secreta_padrao',
-                { expiresIn: '8h' }
+                { expiresIn: precisaDefinirSenha ? '15m' : '8h' }
             );
 
-            return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome });
+            return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome, precisaDefinirSenha });
         } catch (error) {
             console.error('Erro no login via Google:', error);
             return res.status(500).json({ success: false, erro: 'Erro na validação do login com Google.' });
@@ -83,6 +84,42 @@ class AuthController {
         } catch (error) {
             console.error('Erro no login local:', error);
             return res.status(500).json({ success: false, erro: 'Erro ao processar as credenciais.' });
+        }
+    }
+    async definirSenha(req, res) {
+        try {
+            const { novaSenha, confirmarSenha } = req.body;
+
+            if (!novaSenha || !confirmarSenha) {
+                return res.status(400).json({ success: false, erro: 'Preencha todos os campos.' });
+            }
+
+            if (novaSenha !== confirmarSenha) {
+                return res.status(400).json({ success: false, erro: 'As senhas não coincidem.' });
+            }
+
+            if (novaSenha.length < 8) {
+                return res.status(400).json({ success: false, erro: 'A senha deve ter no mínimo 8 caracteres.' });
+            }
+
+            const salt = await bcrypt.genSalt(10);
+            const hashSenha = await bcrypt.hash(novaSenha, salt);
+
+            await Usuario.update(
+                { senha: hashSenha },
+                { where: { id_usuario: req.usuario.id } }
+            );
+
+            const token = jwt.sign(
+                { id: req.usuario.id, role: req.usuario.role, nome: req.usuario.nome, email: req.usuario.email },
+                process.env.JWT_SECRET || 'chave_super_secreta_padrao',
+                { expiresIn: '8h' }
+            );
+
+            return res.json({ success: true, token, role: req.usuario.role, nome: req.usuario.nome });
+        } catch (error) {
+            console.error('Erro ao definir senha:', error);
+            return res.status(500).json({ success: false, erro: 'Erro ao salvar a senha.' });
         }
     }
 }

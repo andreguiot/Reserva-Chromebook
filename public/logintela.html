@@ -20,6 +20,25 @@
         <div id="msg-erro-login" class="msg-erro-card"></div>
         <div id="msg-sucesso-login" class="msg-sucesso-card"></div>
 
+        <!-- Formulário: Definir Senha (1º acesso) -->
+        <form id="form-definir-senha" class="d-none">
+            <div class="input-group">
+                <label for="nova-senha">Nova Senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="nova-senha" placeholder="Mínimo 8 caracteres" required>
+                    <i class="fa-regular fa-eye-slash icon-right" id="toggle-nova-senha"></i>
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="confirmar-senha">Confirmar Senha</label>
+                <div class="input-wrapper">
+                    <input type="password" id="confirmar-senha" placeholder="Repita a senha" required>
+                    <i class="fa-regular fa-eye-slash icon-right" id="toggle-confirmar-senha"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn-primary">Definir Senha e Entrar</button>
+        </form>
+
         <form id="form-login-local">
             <div class="input-group">
                 <label for="email">E-mail</label>
