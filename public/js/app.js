@@ -397,13 +397,13 @@ function limparFiltros() {
 
 function fazerLogout() {
     localStorage.removeItem('adminToken');
-    window.location.href = 'admin.html';
+    window.location.href = 'logintela.html';
 }
 
 // --- Inicialização ---
 const adminToken = localStorage.getItem('adminToken');
 if (!adminToken) {
-    window.location.href = 'admin.html';
+    window.location.href = 'logintela.html';
 } else {
     try {
         // Decodifica o payload do JWT para verificar a role
@@ -411,13 +411,13 @@ if (!adminToken) {
         if (payload.role !== 'Admin') {
             alert('Acesso negado: Você não tem privilégios de administrador.');
             localStorage.removeItem('adminToken');
-            window.location.href = 'admin.html';
+            window.location.href = 'logintela.html';
         } else {
             carregarCarrinhos();
             carregarChromebooks();
             carregarReservas();
         }
     } catch (e) {
-        window.location.href = 'admin.html';
+        window.location.href = 'logintela.html';
     }
 }

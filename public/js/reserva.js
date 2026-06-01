@@ -5,10 +5,14 @@ function clonar(templateId) {
     return document.getElementById(templateId).content.cloneNode(true);
 }
 
+function getToken() {
+    return localStorage.getItem('professorToken') || localStorage.getItem('adminToken');
+}
+
 // --- Carrinhos disponíveis ---
 
 async function carregarCarrinhosDisponiveis() {
-    const token = localStorage.getItem('professorToken');
+    const token = getToken();
     const res = await fetch(`${API_URL}/carrinhos`, {
         headers: { 'Authorization': token ? `Bearer ${token}` : '' }
     });
@@ -16,6 +20,7 @@ async function carregarCarrinhosDisponiveis() {
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
             localStorage.removeItem('professorToken');
+            localStorage.removeItem('adminToken');
             alert('Sessão expirada. Faça login novamente.');
             window.location.reload();
         }
@@ -75,7 +80,7 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
         quantidade_chromebooks: tipoSelecionado === 'individual' ? document.getElementById('quantidade').value : null
     };
 
-    const token = localStorage.getItem('professorToken');
+    const token = getToken();
 
     const res = await fetch(`${API_URL}/reservas`, {
         method: 'POST',
@@ -105,7 +110,7 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 });
 
 // --- Inicialização ---
-const tokenSalvo = localStorage.getItem('professorToken');
+const tokenSalvo = getToken();
 if (!tokenSalvo) {
     window.location.href = 'logintela.html';
 } else {
@@ -145,7 +150,7 @@ inputFiltroData.addEventListener('change', (e) => {
 async function carregarAgenda(data) {
     if (!data) return;
 
-    const token = localStorage.getItem('professorToken');
+    const token = getToken();
     if (!token) {
         alert('Você precisa estar autenticado para visualizar a agenda.');
         modalAgenda.classList.add('d-none');
@@ -159,6 +164,7 @@ async function carregarAgenda(data) {
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
             localStorage.removeItem('professorToken');
+            localStorage.removeItem('adminToken');
             alert('Sessão expirada. Faça login novamente.');
             window.location.reload();
         }
