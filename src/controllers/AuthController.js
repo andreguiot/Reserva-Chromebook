@@ -55,38 +55,6 @@ class AuthController {
             return res.status(500).json({ success: false, erro: 'Erro na validação do login com Google.' });
         }
     }
-    async registerLocal(req, res) {
-        try {
-            const { nome, email, senha } = req.body;
-            if (!nome || !email || !senha) {
-                return res.status(400).json({ success: false, erro: 'Preencha todos os campos obrigatórios.' });
-            }
-
-            if (!email.endsWith('@lasalle.org.br')) {
-                return res.status(403).json({ success: false, erro: 'O cadastro é restrito a contas @lasalle.org.br.' });
-            }
-
-            const usuarioExistente = await Usuario.findOne({ where: { email } });
-            if (usuarioExistente) {
-                return res.status(400).json({ success: false, erro: 'E-mail já cadastrado no sistema.' });
-            }
-
-            const salt = await bcrypt.genSalt(10);
-            const hashSenha = await bcrypt.hash(senha, salt);
-
-            await Usuario.create({
-                nome,
-                email,
-                senha: hashSenha,
-                tipo_perfil: 'Comum'
-            });
-
-            return res.json({ success: true, mensagem: 'Cadastro realizado com sucesso! Efetue login para continuar.' });
-        } catch (error) {
-            console.error('Erro no cadastro local:', error);
-            return res.status(500).json({ success: false, erro: 'Erro interno ao tentar cadastrar usuário.' });
-        }
-    }
 
     async loginLocal(req, res) {
         try {
