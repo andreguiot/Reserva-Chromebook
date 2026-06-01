@@ -287,7 +287,9 @@ async function carregarChromebooksEscaneados(id_reserva) {
         const li = clone.querySelector('.scan-device-item');
         if (isDeslocado) li.classList.add('deslocado');
 
-        clone.querySelector('.scan-device-pat').innerHTML = `Pat: <strong>${cb ? cb.id_patrimonio : 'N/A'}</strong>`;
+        const patContainer = clone.querySelector('.scan-device-pat');
+        patContainer.innerHTML = 'Pat: <strong></strong>';
+        patContainer.querySelector('strong').textContent = cb ? cb.id_patrimonio : 'N/A';
 
         const serieSpan = clone.querySelector('.scan-device-serie');
         serieSpan.textContent = `Série: ${cb ? cb.numero_serie : 'N/A'}`;
