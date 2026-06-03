@@ -5,6 +5,8 @@ const Usuario = require('./Usuario');
 const Reserva = require('./Reserva');
 const ReservaChromebook = require('./ReservaChromebook');
 
+const LogAuditoria = require('./LogAuditoria');
+
 Carrinho.hasMany(Chromebook, { foreignKey: 'id_carrinho' });
 Chromebook.belongsTo(Carrinho, { foreignKey: 'id_carrinho' });
 
@@ -17,4 +19,4 @@ ReservaChromebook.belongsTo(Reserva, { foreignKey: 'id_reserva' });
 ReservaChromebook.belongsTo(Chromebook, { foreignKey: 'id_chromebook' });
 Chromebook.hasMany(ReservaChromebook, { foreignKey: 'id_chromebook' });
 
-module.exports = { sequelize, Carrinho, Chromebook, Usuario, Reserva, ReservaChromebook };
+module.exports = { sequelize, Carrinho, Chromebook, Usuario, Reserva, ReservaChromebook, LogAuditoria };

@@ -1,5 +1,6 @@
 const { Reserva, ReservaChromebook, Chromebook, Carrinho } = require('../models');
 const { Op } = require('sequelize');
+const AuditoriaController = require('./AuditoriaController');
 
 async function verificarAtrasadas() {
     const agora = new Date();
@@ -87,6 +88,9 @@ class ReservaController {
                 data_reserva, horario_inicio, horario_fim,
                 status: 'pendente'
             });
+
+            await AuditoriaController.registrar(req, 'CRIACAO_RESERVA', `Reserva ${novaReserva.id_reserva} criada para ${nome_professor} (${tipo_reserva})`);
+
             return res.status(201).json(novaReserva);
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao criar reserva' });
@@ -137,6 +141,8 @@ class ReservaController {
                 await reserva.update({ status: 'ativa' });
             }
 
+            await AuditoriaController.registrar(req, 'ESCANEAMENTO_CHROMEBOOK', `Patrimônio ${id_patrimonio} na reserva ${id}. Status: ${statusItem}`);
+
             return res.json({ item, alerta: statusItem === 'deslocado' });
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao escanear chromebook' });
@@ -165,6 +171,9 @@ class ReservaController {
                 }
 
                 await reserva.update({ status: 'ativa' });
+
+                await AuditoriaController.registrar(req, 'VALIDACAO_CARRINHO', `Carrinho da reserva ${id} validado com patrimônio ${id_patrimonio}`);
+
                 return res.json({ mensagem: 'Carrinho validado com sucesso', reserva });
             }
 
@@ -186,6 +195,9 @@ class ReservaController {
                 { where: { id_reserva: id, status: 'entregue' } }
             );
             await reserva.update({ status: 'encerrada' });
+
+            await AuditoriaController.registrar(req, 'ENCERRAMENTO_RESERVA', `Reserva ${id} encerrada e itens marcados como devolvidos`);
+
             return res.json({ mensagem: 'Reserva encerrada com sucesso' });
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao encerrar reserva' });
