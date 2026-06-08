@@ -1,4 +1,3 @@
-/* Cards em fundo branco precisam de uma borda leve e sombra bem sutil */
 .form-card {
     background-color: var(--color-bg);
     padding: calc(var(--base-unit) * 6);
@@ -20,7 +19,6 @@
     flex: 1;
 }
 
-/* Inputs conforme o Branding: transparent, text #999999, border-radius 0px, no shadow */
 input,
 select {
     width: 100%;

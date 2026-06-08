@@ -10,7 +10,7 @@ function authMiddleware(req, res, next) {
     }
 
     try {
-        const segredo = process.env.JWT_SECRET || 'chave_super_secreta_padrao';
+        const segredo = process.env.JWT_SECRET;
         const decodificado = jwt.verify(token, segredo);
         
         req.usuario = decodificado; // Salva as infos do usuário logado na requisição (ex: { role: 'admin' })

@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 const bcrypt = require('bcryptjs');
 const { Usuario } = require('../models');
+const AuditoriaController = require('./AuditoriaController');
 
-// O Client ID do Google deve estar no .env
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 class AuthController {
@@ -46,13 +46,17 @@ class AuthController {
 
             const token = jwt.sign(
                 { id: usuario.id_usuario, role: usuario.tipo_perfil, nome: usuario.nome, email: usuario.email },
-                process.env.JWT_SECRET || 'chave_super_secreta_padrao',
+                process.env.JWT_SECRET,
                 { expiresIn: precisaDefinirSenha ? '15m' : '8h' }
             );
 
+            // Mockar o req.usuario para o log capturar o email
+            req.usuario = { email: usuario.email };
+            await AuditoriaController.registrar(req, 'LOGIN_GOOGLE_SUCESSO', precisaDefinirSenha ? 'Primeiro acesso (pendente de senha)' : 'Login padrão');
+
             return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome, precisaDefinirSenha });
         } catch (error) {
-            console.error('Erro no login via Google:', error);
+            await AuditoriaController.registrar(req, 'LOGIN_GOOGLE_FALHA', error.message || 'Erro de validação');
             return res.status(500).json({ success: false, erro: 'Erro na validação do login com Google.' });
         }
     }
@@ -76,13 +80,16 @@ class AuthController {
 
             const token = jwt.sign(
                 { id: usuario.id_usuario, role: usuario.tipo_perfil, nome: usuario.nome, email: usuario.email },
-                process.env.JWT_SECRET || 'chave_super_secreta_padrao',
+                process.env.JWT_SECRET,
                 { expiresIn: '8h' }
             );
 
+            req.usuario = { email: usuario.email };
+            await AuditoriaController.registrar(req, 'LOGIN_LOCAL_SUCESSO', 'Autenticação com e-mail e senha locais');
+
             return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome });
         } catch (error) {
-            console.error('Erro no login local:', error);
+            await AuditoriaController.registrar(req, 'LOGIN_LOCAL_FALHA', error.message || 'Erro ao processar');
             return res.status(500).json({ success: false, erro: 'Erro ao processar as credenciais.' });
         }
     }
@@ -112,13 +119,15 @@ class AuthController {
 
             const token = jwt.sign(
                 { id: req.usuario.id, role: req.usuario.role, nome: req.usuario.nome, email: req.usuario.email },
-                process.env.JWT_SECRET || 'chave_super_secreta_padrao',
+                process.env.JWT_SECRET,
                 { expiresIn: '8h' }
             );
 
+            await AuditoriaController.registrar(req, 'DEFINICAO_SENHA_SUCESSO', 'Senha local cadastrada com sucesso');
+
             return res.json({ success: true, token, role: req.usuario.role, nome: req.usuario.nome });
         } catch (error) {
-            console.error('Erro ao definir senha:', error);
+            await AuditoriaController.registrar(req, 'DEFINICAO_SENHA_FALHA', error.message || 'Erro genérico');
             return res.status(500).json({ success: false, erro: 'Erro ao salvar a senha.' });
         }
     }

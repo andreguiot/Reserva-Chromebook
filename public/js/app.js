@@ -26,6 +26,10 @@ function mudarAba(abaId) {
 
     document.getElementById('aba-' + abaId).classList.add('active');
     event.currentTarget.classList.add('active');
+
+    if (abaId === 'auditoria') {
+        carregarLogsAuditoria();
+    }
 }
 
 // --- Carrinhos ---
@@ -391,6 +395,41 @@ function limparFiltros() {
     document.getElementById('filtro-status').value = '';
     document.getElementById('filtro-data').value = '';
     carregarReservas();
+}
+
+// --- Auditoria ---
+
+async function carregarLogsAuditoria() {
+    const res = await fetch(`${API_URL}/auditoria`, { headers: getAuthHeaders() });
+    const tbody = document.getElementById('lista-auditoria');
+    limparEl(tbody);
+
+    if (!res.ok) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="5">Erro ao carregar logs.</td>';
+        tbody.appendChild(tr);
+        return;
+    }
+
+    const logs = await res.json();
+
+    if (logs.length === 0) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="5">Nenhum log encontrado.</td>';
+        tbody.appendChild(tr);
+        return;
+    }
+
+    logs.forEach(log => {
+        const clone = clonar('tpl-log-item');
+        const dataFormatada = new Date(log.data_hora).toLocaleString('pt-BR');
+        clone.querySelector('.log-data').textContent = dataFormatada;
+        clone.querySelector('.log-acao strong').textContent = log.acao;
+        clone.querySelector('.log-usuario').textContent = log.email_usuario;
+        clone.querySelector('.log-ip').textContent = log.ip || 'N/A';
+        clone.querySelector('.log-detalhes').textContent = log.detalhes;
+        tbody.appendChild(clone);
+    });
 }
 
 // --- Logout ---
