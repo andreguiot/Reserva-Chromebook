@@ -60,3 +60,21 @@
     color: #FFCDD2;
     font-weight: normal;
 }
+
+.btn-table-action {
+    background-color: transparent;
+    color: var(--color-primary);
+    border: 1px solid var(--color-primary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-table-action:hover {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}

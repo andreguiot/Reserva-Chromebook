@@ -15,7 +15,21 @@ if (missingVars.length > 0) {
 const app = express();
 const port = process.env.PORT || 3000;
 
-app.use(helmet());
+app.use(helmet({
+    crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+    crossOriginEmbedderPolicy: false,
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'", "https:", "http:", "data:", "'unsafe-inline'", "'unsafe-eval'"],
+            scriptSrc: ["'self'", "https:", "http:", "'unsafe-inline'", "'unsafe-eval'"],
+            styleSrc: ["'self'", "https:", "http:", "'unsafe-inline'"],
+            imgSrc: ["'self'", "data:", "https:"],
+            fontSrc: ["'self'", "https:", "data:"],
+            connectSrc: ["'self'", "https:", "http:"],
+            frameSrc: ["'self'", "https:"]
+        }
+    }
+}));
 
 app.use(cors({
     origin: process.env.CORS_ORIGIN.split(',')
@@ -45,12 +59,14 @@ const carrinhoRoutes = require('./routes/carrinhoRoutes');
 const chromebookRoutes = require('./routes/chromebookRoutes');
 const reservaRoutes = require('./routes/reservaRoutes');
 const auditoriaRoutes = require('./routes/auditoriaRoutes');
+const usuarioRoutes = require('./routes/usuarioRoutes');
 
 app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/carrinhos', carrinhoRoutes);
 app.use('/api/chromebooks', chromebookRoutes);
 app.use('/api/reservas', reservaRoutes);
 app.use('/api/auditoria', auditoriaRoutes);
+app.use('/api/usuarios', usuarioRoutes);
 
 app.get('/', (req, res) => {
     res.send('Servidor do Sistema de Reservas de Chromebooks rodando!');

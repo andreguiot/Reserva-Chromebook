@@ -17,9 +17,10 @@
             <p>Sistema de Reservas</p>
         </div>
         <nav class="top-menu">
-            <button class="tab-btn active" onclick="mudarAba('reservas')">Validar Reservas</button>
-            <button class="tab-btn" onclick="mudarAba('dispositivos')">Cadastrar Dispositivos</button>
-            <button class="tab-btn" onclick="mudarAba('auditoria')">Auditoria / Logs</button>
+            <button class="tab-btn active" data-aba="reservas">Validar Reservas</button>
+            <button class="tab-btn" data-aba="dispositivos">Cadastrar Dispositivos</button>
+            <button class="tab-btn" data-aba="auditoria">Auditoria / Logs</button>
+            <button class="tab-btn" data-aba="usuarios">Usuários / Acessos</button>
             <a href="reserva.html" class="tab-btn btn-ver-site">Solicitar Reserva</a>
             <button class="tab-btn btn-sair" onclick="fazerLogout()">Sair</button>
         </nav>
@@ -93,6 +94,9 @@
                         <ul id="lista-chromebooks" class="grid-dispositivos"></ul>
                     </div>
                 </div>
+            </div>
+        </section>
+
         <!-- ABA: AUDITORIA E LOGS -->
         <section id="aba-auditoria" class="aba-content">
             <h2>Auditoria de Sistema</h2>
@@ -109,6 +113,26 @@
                     </thead>
                     <tbody id="lista-auditoria">
                         <tr><td colspan="5">Carregando logs...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ABA: USUÁRIOS / ACESSOS -->
+        <section id="aba-usuarios" class="aba-content">
+            <h2>Gerenciamento de Usuários</h2>
+            <div class="panel">
+                <table class="tabela-reservas" id="tabela-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>E-mail</th>
+                            <th>Perfil</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lista-usuarios">
+                        <tr><td colspan="4">Carregando usuários...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -162,6 +186,8 @@
             <span class="scan-device-serie"></span>
             <span class="scan-badge"></span>
         </li>
+    </template>
+
     <template id="tpl-log-item">
         <tr>
             <td class="log-data"></td>
@@ -172,7 +198,16 @@
         </tr>
     </template>
 
-    <script src="js/app.js"></script>
+    <template id="tpl-usuario-item">
+        <tr>
+            <td class="usuario-nome"></td>
+            <td class="usuario-email"></td>
+            <td><span class="badge-perfil"></span></td>
+            <td><button class="btn-toggle-perfil btn-table-action"></button></td>
+        </tr>
+    </template>
+
+    <script src="js/app.js?v=2"></script>
 </body>
 
 </html>

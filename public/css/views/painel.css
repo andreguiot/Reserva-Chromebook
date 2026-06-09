@@ -243,3 +243,41 @@
         justify-content: space-between;
     }
 }
+
+/* Estilo Moderno para Tabelas do Painel */
+.tabela-reservas {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 1rem;
+    font-size: 14px;
+    background: #FFFFFF;
+    border-radius: var(--radius-global);
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    border: 1px solid #E0E0E0;
+}
+
+.tabela-reservas th, .tabela-reservas td {
+    padding: 16px;
+    text-align: left;
+    border-bottom: 1px solid #F0F0F0;
+    color: var(--color-text-primary);
+}
+
+.tabela-reservas th {
+    background-color: #FAFAFA;
+    font-weight: 600;
+    color: #333333;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+}
+
+.tabela-reservas tr:last-child td {
+    border-bottom: none;
+}
+
+.tabela-reservas tr:hover td {
+    background-color: #F8F9FA;
+}

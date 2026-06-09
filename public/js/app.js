@@ -20,17 +20,36 @@ function limparEl(el) {
 
 // --- Abas ---
 
-function mudarAba(abaId) {
-    document.querySelectorAll('.aba-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+function mudarAba(abaId, btnEl) {
+    try {
+        document.querySelectorAll('.aba-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
 
-    document.getElementById('aba-' + abaId).classList.add('active');
-    event.currentTarget.classList.add('active');
+        const secao = document.getElementById('aba-' + abaId);
+        if (secao) secao.classList.add('active');
+        
+        if (btnEl) btnEl.classList.add('active');
 
-    if (abaId === 'auditoria') {
-        carregarLogsAuditoria();
+        if (abaId === 'auditoria') {
+            carregarLogsAuditoria();
+        }
+        if (abaId === 'usuarios') {
+            carregarUsuarios();
+        }
+    } catch (e) {
+        alert('Erro ao mudar de aba: ' + e.message);
+        console.error(e);
     }
 }
+
+// Vincula os cliques de aba via JS para evitar problemas de CSP com onclick inline
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-aba]').forEach(btn => {
+        btn.addEventListener('click', function() {
+            mudarAba(this.getAttribute('data-aba'), this);
+        });
+    });
+});
 
 // --- Carrinhos ---
 
@@ -437,6 +456,72 @@ async function carregarLogsAuditoria() {
 function fazerLogout() {
     localStorage.removeItem('adminToken');
     window.location.href = 'logintela.html';
+}
+
+// --- Usuários / Acessos ---
+
+async function carregarUsuarios() {
+    const lista = document.getElementById('lista-usuarios');
+    try {
+        const res = await fetch(`${API_URL}/usuarios`, { headers: getAuthHeaders() });
+        if (!res.ok) {
+            lista.innerHTML = '<tr><td colspan="4">Erro ao carregar usuários.</td></tr>';
+            return;
+        }
+        const usuarios = await res.json();
+        limparEl(lista);
+
+        if (usuarios.length === 0) {
+            const tr = document.createElement('tr');
+            const td = document.createElement('td');
+            td.setAttribute('colspan', '4');
+            td.textContent = 'Nenhum usuário cadastrado.';
+            tr.appendChild(td);
+            lista.appendChild(tr);
+            return;
+        }
+
+        usuarios.forEach(u => {
+            const clone = clonar('tpl-usuario-item');
+            clone.querySelector('.usuario-nome').textContent = u.nome;
+            clone.querySelector('.usuario-email').textContent = u.email;
+
+            const badge = clone.querySelector('.badge-perfil');
+            badge.textContent = u.tipo_perfil;
+            badge.className = `badge-perfil badge-status ${u.tipo_perfil === 'Admin' ? 'status-ativa' : 'status-pendente'}`;
+
+            const btn = clone.querySelector('.btn-toggle-perfil');
+            const novoPerfil = u.tipo_perfil === 'Admin' ? 'Comum' : 'Admin';
+            btn.textContent = u.tipo_perfil === 'Admin' ? 'Rebaixar para Comum' : 'Promover para Admin';
+            btn.addEventListener('click', () => mudarPerfilUsuario(u.id_usuario, novoPerfil, u.nome));
+
+            lista.appendChild(clone);
+        });
+    } catch (error) {
+        lista.innerHTML = '<tr><td colspan="4">Erro de conexão ao carregar usuários.</td></tr>';
+    }
+}
+
+async function mudarPerfilUsuario(id, novoPerfil, nome) {
+    const confirmado = confirm(`Deseja alterar o perfil de "${nome}" para "${novoPerfil}"?`);
+    if (!confirmado) return;
+
+    try {
+        const res = await fetch(`${API_URL}/usuarios/${id}/perfil`, {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ tipo_perfil: novoPerfil })
+        });
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+            await carregarUsuarios();
+        } else {
+            alert(`Erro: ${data.erro || 'Não foi possível alterar o perfil.'}`);
+        }
+    } catch (error) {
+        alert('Erro de conexão. Tente novamente.');
+    }
 }
 
 // --- Inicialização ---
