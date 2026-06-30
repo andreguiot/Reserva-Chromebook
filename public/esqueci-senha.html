@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - La Salle Abel</title>
+    <title>Redefinir Senha - La Salle Abel</title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,14 +13,17 @@
 
 <body>
     <div class="login-left">
-        <a href="index.html" class="back-link"><i class="fa-solid fa-arrow-left"></i></a>
+        <a href="logintela.html" class="back-link"><i class="fa-solid fa-arrow-left"></i></a>
 
-        <h1>Bem-Vindo(a)</h1>
+        <h1>Redefinir Senha</h1>
 
         <div id="msg-erro-login" class="msg-erro-card"></div>
-        <div id="msg-sucesso-login" class="msg-sucesso-card"></div>
 
-        <!-- Formulário: Definir Senha (1º acesso) -->
+        <div style="background-color: #e3f2fd; color: #0d47a1; border: 1px solid #bbdefb; padding: 14px; border-radius: 6px; font-size: 0.95rem; text-align: center; margin-bottom: 2rem;">
+            <i class="fa-solid fa-info-circle"></i> Logue-se pelo Google e redefina sua senha
+        </div>
+
+        <!-- Formulário: Definir Nova Senha (aparece após Google login) -->
         <form id="form-definir-senha" class="d-none">
             <div class="input-group">
                 <label for="nova-senha">Nova Senha</label>
@@ -36,39 +39,10 @@
                     <i class="fa-regular fa-eye-slash icon-right" id="toggle-confirmar-senha"></i>
                 </div>
             </div>
-            <button type="submit" class="btn-primary">Definir Senha e Entrar</button>
+            <button type="submit" class="btn-primary">Salvar Nova Senha</button>
         </form>
 
-        <form id="form-login-local">
-            <div class="input-group">
-                <label for="email">E-mail</label>
-                <div class="input-wrapper">
-                    <i class="fa-regular fa-user icon-left"></i>
-                    <input type="email" id="email" placeholder="E-mail institucional" required>
-                </div>
-            </div>
-
-            <div class="input-group">
-                <label for="senha">Senha</label>
-                <div class="input-wrapper">
-                    <input type="password" id="senha" placeholder="Sua senha" required>
-                    <i class="fa-regular fa-eye-slash icon-right" id="toggle-senha"></i>
-                </div>
-            </div>
-
-            <div class="options-row">
-                <label class="checkbox-group">
-                    <input type="checkbox" id="manter-conectado"> Mantenha-me conectado
-                </label>
-                <a href="esqueci-senha.html" class="forgot-pwd">Esqueci minha senha</a>
-            </div>
-
-            <button type="submit" class="btn-primary">Login</button>
-        </form>
-
-        <div class="divider">ou Logue-se / Cadastre-se pelo Google</div>
-
-        <div class="google-btn-wrapper">
+        <div class="google-btn-wrapper" id="google-btn-wrapper">
             <div id="g_id_onload"
                 data-client_id="803873738013-ihgv3tp0d44uqn1ei5iemasa3rvdklnh.apps.googleusercontent.com"
                 data-context="signin" data-ux_mode="popup" data-callback="handleGoogleLogin" data-auto_prompt="false">
@@ -84,7 +58,7 @@
         <img src="images/lasallevertical.webp" alt="Logo La Salle Abel">
         <h2 class="branding-title">Reserva de ChromeBooks</h2>
     </div>
-    <script src="js/login.js"></script>
+    <script src="js/esqueci-senha.js"></script>
 </body>
 
 </html>
