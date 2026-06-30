@@ -42,13 +42,28 @@ function mudarAba(abaId, btnEl) {
     }
 }
 
-// Vincula os cliques de aba via JS para evitar problemas de CSP com onclick inline
+// Vincula os cliques via JS para evitar problemas de CSP com onclick inline
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-aba]').forEach(btn => {
         btn.addEventListener('click', function() {
             mudarAba(this.getAttribute('data-aba'), this);
         });
     });
+
+    const btnSair = document.getElementById('btn-sair');
+    if (btnSair) btnSair.addEventListener('click', fazerLogout);
+
+    const btnValidar = document.getElementById('btn-validar-reserva');
+    if (btnValidar) btnValidar.addEventListener('click', validarReserva);
+
+    const btnLimpar = document.getElementById('btn-limpar-filtros');
+    if (btnLimpar) btnLimpar.addEventListener('click', limparFiltros);
+
+    const filtroStatus = document.getElementById('filtro-status');
+    if (filtroStatus) filtroStatus.addEventListener('change', aplicarFiltros);
+
+    const filtroData = document.getElementById('filtro-data');
+    if (filtroData) filtroData.addEventListener('change', aplicarFiltros);
 });
 
 // --- Carrinhos ---

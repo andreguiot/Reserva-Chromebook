@@ -64,6 +64,9 @@ function selecionarTipo(tipo) {
     document.getElementById('quantidade').required = tipo === 'individual';
 }
 
+document.getElementById('btn-carrinho').addEventListener('click', () => selecionarTipo('carrinho'));
+document.getElementById('btn-individual').addEventListener('click', () => selecionarTipo('individual'));
+
 // --- Submissão do formulário ---
 
 document.getElementById('form-reserva').addEventListener('submit', async (e) => {
