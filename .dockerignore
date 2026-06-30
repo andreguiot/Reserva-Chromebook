@@ -1,0 +1,13 @@
+node_modules
+.npm
+.env
+.git
+.agents
+.gemini
+logs
+*.log
+docker-compose.yml
+README.md
+ImplementationPan.txt
+progressao.md
+CONTEXTO_PROJETO.md
