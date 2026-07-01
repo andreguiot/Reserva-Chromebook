@@ -252,6 +252,27 @@ body {
     display: none;
 }
 
+.msg-info-card {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border: 1px solid #bbdefb;
+    padding: 14px;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Utilities */
+.d-none {
+    display: none !important;
+}
+
+.d-block {
+    display: block !important;
+}
+
+
 /* Responsivo */
 @media (max-width: 900px) {
     .login-right {

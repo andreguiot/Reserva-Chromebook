@@ -53,7 +53,8 @@ function processarLoginSucesso(data) {
 // --- Submissão: Login Local (E-mail e Senha) ---
 formLogin.addEventListener('submit', async (e) => {
     e.preventDefault();
-    msgErro.style.display = 'none';
+    msgErro.classList.remove('d-block');
+    msgErro.classList.add('d-none');
 
     const email = document.getElementById('email').value;
     const senha = document.getElementById('senha').value;
@@ -71,17 +72,20 @@ formLogin.addEventListener('submit', async (e) => {
             processarLoginSucesso(data);
         } else {
             msgErro.textContent = '❌ ' + (data.erro || 'Ocorreu um erro.');
-            msgErro.style.display = 'block';
+            msgErro.classList.remove('d-none');
+            msgErro.classList.add('d-block');
         }
     } catch (error) {
         msgErro.textContent = '❌ Erro de conexão com o servidor.';
-        msgErro.style.display = 'block';
+        msgErro.classList.remove('d-none');
+        msgErro.classList.add('d-block');
     }
 });
 
 // --- Callback do Botão do Google ---
 async function handleGoogleLogin(response) {
-    msgErro.style.display = 'none';
+    msgErro.classList.remove('d-block');
+    msgErro.classList.add('d-none');
 
     try {
         const res = await fetch(`${API_URL}/auth/google`, {
@@ -101,25 +105,29 @@ async function handleGoogleLogin(response) {
             }
         } else {
             msgErro.textContent = `❌ ${data.erro || 'Acesso negado.'}`;
-            msgErro.style.display = 'block';
+            msgErro.classList.remove('d-none');
+            msgErro.classList.add('d-block');
         }
     } catch (error) {
         msgErro.textContent = '❌ Erro de conexão com o servidor.';
-        msgErro.style.display = 'block';
+        msgErro.classList.remove('d-none');
+        msgErro.classList.add('d-block');
     }
 }
 
 // --- Submissão: Definir Senha (1º Acesso) ---
 formDefinirSenha.addEventListener('submit', async (e) => {
     e.preventDefault();
-    msgErro.style.display = 'none';
+    msgErro.classList.remove('d-block');
+    msgErro.classList.add('d-none');
 
     const novaSenha = document.getElementById('nova-senha').value;
     const confirmarSenha = document.getElementById('confirmar-senha').value;
 
     if (novaSenha !== confirmarSenha) {
         msgErro.textContent = '❌ As senhas não coincidem.';
-        msgErro.style.display = 'block';
+        msgErro.classList.remove('d-none');
+        msgErro.classList.add('d-block');
         return;
     }
 
@@ -139,10 +147,12 @@ formDefinirSenha.addEventListener('submit', async (e) => {
             processarLoginSucesso(data);
         } else {
             msgErro.textContent = '❌ ' + (data.erro || 'Erro ao definir senha.');
-            msgErro.style.display = 'block';
+            msgErro.classList.remove('d-none');
+            msgErro.classList.add('d-block');
         }
     } catch (error) {
         msgErro.textContent = '❌ Erro de conexão com o servidor.';
-        msgErro.style.display = 'block';
+        msgErro.classList.remove('d-none');
+        msgErro.classList.add('d-block');
     }
 });
