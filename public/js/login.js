@@ -41,11 +41,11 @@ function mostrarModoDefinirSenha() {
 
 // --- Redirecionar após login bem-sucedido ---
 function processarLoginSucesso(data) {
+    sessionStorage.setItem('role', data.role);
+    sessionStorage.setItem('nome', data.nome);
     if (data.role === 'Admin') {
-        localStorage.setItem('adminToken', data.token);
         window.location.href = 'painel.html';
     } else {
-        localStorage.setItem('professorToken', data.token);
         window.location.href = 'reserva.html';
     }
 }
@@ -135,8 +135,7 @@ formDefinirSenha.addEventListener('submit', async (e) => {
         const res = await fetch(`${API_URL}/auth/definir-senha`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenProvisorio}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ novaSenha, confirmarSenha })
         });

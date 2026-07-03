@@ -5,22 +5,21 @@ function clonar(templateId) {
     return document.getElementById(templateId).content.cloneNode(true);
 }
 
-function getToken() {
-    return localStorage.getItem('professorToken') || localStorage.getItem('adminToken');
+function isLogado() {
+    return sessionStorage.getItem('role') !== null;
 }
 
 // --- Carrinhos disponíveis ---
 
 async function carregarCarrinhosDisponiveis() {
-    const token = getToken();
     const res = await fetch(`${API_URL}/carrinhos`, {
-        headers: { 'Authorization': token ? `Bearer ${token}` : '' }
+        headers: { 'Content-Type': 'application/json' }
     });
     
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-            localStorage.removeItem('professorToken');
-            localStorage.removeItem('adminToken');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('nome');
             alert('Sessão expirada. Faça login novamente.');
             window.location.reload();
         }
@@ -83,13 +82,10 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
         quantidade_chromebooks: tipoSelecionado === 'individual' ? document.getElementById('quantidade').value : null
     };
 
-    const token = getToken();
-
     const res = await fetch(`${API_URL}/reservas`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token ? `Bearer ${token}` : ''
+            'Content-Type': 'application/json'
         },
         body: JSON.stringify(body)
     });
@@ -113,8 +109,7 @@ document.getElementById('form-reserva').addEventListener('submit', async (e) => 
 });
 
 // --- Inicialização ---
-const tokenSalvo = getToken();
-if (!tokenSalvo) {
+if (!isLogado()) {
     window.location.href = 'logintela.html';
 } else {
     carregarCarrinhosDisponiveis();
@@ -153,21 +148,20 @@ inputFiltroData.addEventListener('change', (e) => {
 async function carregarAgenda(data) {
     if (!data) return;
 
-    const token = getToken();
-    if (!token) {
+    if (!isLogado()) {
         alert('Você precisa estar autenticado para visualizar a agenda.');
         modalAgenda.classList.add('d-none');
         return;
     }
 
     const res = await fetch(`${API_URL}/reservas?data=${data}`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        headers: { 'Content-Type': 'application/json' }
     });
 
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-            localStorage.removeItem('professorToken');
-            localStorage.removeItem('adminToken');
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('nome');
             alert('Sessão expirada. Faça login novamente.');
             window.location.reload();
         }

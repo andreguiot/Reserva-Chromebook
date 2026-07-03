@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const requiredEnvVars = ['DATABASE_URL', 'GOOGLE_CLIENT_ID', 'JWT_SECRET', 'CORS_ORIGIN'];
@@ -37,6 +38,7 @@ app.use(cors({
 
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: true, limit: '100kb' }));
+app.use(cookieParser());
 
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,

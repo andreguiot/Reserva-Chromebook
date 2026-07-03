@@ -18,8 +18,8 @@ async function handleCredentialResponse(response) {
 
         if (data.success) {
             if (data.role === 'Admin') {
-                // Salvar token gerado pelo nosso backend
-                localStorage.setItem('adminToken', data.token);
+                sessionStorage.setItem('role', data.role);
+                sessionStorage.setItem('nome', data.nome);
                 // Redireciona para o painel se for Admin
                 window.location.href = 'painel.html';
             } else {

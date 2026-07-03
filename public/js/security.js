@@ -1,9 +1,11 @@
 // Proteção do Frontend
-if (!localStorage.getItem('adminToken')) {
+if (sessionStorage.getItem('role') !== 'Admin') {
     window.location.href = 'logintela.html';
 }
 
-function fazerLogout() {
-    localStorage.removeItem('adminToken');
+async function fazerLogout() {
+    try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (e) {}
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('nome');
     window.location.href = 'logintela.html';
 }

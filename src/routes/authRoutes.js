@@ -8,5 +8,6 @@ const { loginSchema, definirSenhaSchema } = require('../validators/authValidator
 router.post('/google', authController.loginGoogle);
 router.post('/login', validar(loginSchema), authController.loginLocal);
 router.post('/definir-senha', authMiddleware, validar(definirSenhaSchema), authController.definirSenha);
+router.post('/logout', authController.logout);
 
 module.exports = router;

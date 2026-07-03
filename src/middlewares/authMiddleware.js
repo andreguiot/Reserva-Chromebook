@@ -1,9 +1,8 @@
 const jwt = require('jsonwebtoken');
 
 function authMiddleware(req, res, next) {
-    // Pegar o token do cabeçalho
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1]; // Formato "Bearer TOKEN"
+    // Pegar o token do cookie
+    const token = req.cookies.auth_token;
 
     if (!token) {
         return res.status(401).json({ erro: 'Acesso negado. Token não fornecido.' });

@@ -5,7 +5,6 @@ const msgErro = document.getElementById('msg-erro-login');
 const msgInfo = document.getElementById('msg-info');
 const googleBtnWrapper = document.getElementById('google-btn-wrapper');
 
-let tokenProvisorio = null;
 
 // --- Utilitário: Alternar visibilidade de senha ---
 function configurarToggleSenha(toggleId, inputId) {
@@ -41,8 +40,6 @@ async function handleGoogleLogin(response) {
         const data = await res.json();
 
         if (res.ok && data.success) {
-            tokenProvisorio = data.token;
-
             // Mostrar formulário de nova senha
             document.querySelector('.login-left h1').textContent = 'Defina sua Nova Senha';
             msgInfo.classList.remove('d-block');
@@ -81,8 +78,7 @@ formDefinirSenha.addEventListener('submit', async (e) => {
         const res = await fetch(`${API_URL}/auth/definir-senha`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${tokenProvisorio}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ novaSenha, confirmarSenha })
         });
@@ -90,11 +86,11 @@ formDefinirSenha.addEventListener('submit', async (e) => {
         const data = await res.json();
 
         if (res.ok && data.success) {
+            sessionStorage.setItem('role', data.role);
+            sessionStorage.setItem('nome', data.nome);
             if (data.role === 'Admin') {
-                localStorage.setItem('adminToken', data.token);
                 window.location.href = 'painel.html';
             } else {
-                localStorage.setItem('professorToken', data.token);
                 window.location.href = 'reserva.html';
             }
         } else {

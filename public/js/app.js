@@ -3,10 +3,8 @@ const API_URL = '/api';
 // --- Utilitários ---
 
 function getAuthHeaders() {
-    const token = localStorage.getItem('adminToken');
     return {
-        'Content-Type': 'application/json',
-        'Authorization': token ? `Bearer ${token}` : ''
+        'Content-Type': 'application/json'
     };
 }
 
@@ -468,8 +466,14 @@ async function carregarLogsAuditoria() {
 
 // --- Logout ---
 
-function fazerLogout() {
-    localStorage.removeItem('adminToken');
+async function fazerLogout() {
+    try {
+        await fetch(`${API_URL}/auth/logout`, { method: 'POST' });
+    } catch (e) {
+        console.error('Erro ao sair:', e);
+    }
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('nome');
     window.location.href = 'logintela.html';
 }
 
@@ -540,23 +544,14 @@ async function mudarPerfilUsuario(id, novoPerfil, nome) {
 }
 
 // --- Inicialização ---
-const adminToken = localStorage.getItem('adminToken');
-if (!adminToken) {
+const role = sessionStorage.getItem('role');
+if (role !== 'Admin') {
+    alert('Acesso negado: Você não tem privilégios de administrador.');
+    sessionStorage.removeItem('role');
+    sessionStorage.removeItem('nome');
     window.location.href = 'logintela.html';
 } else {
-    try {
-        // Decodifica o payload do JWT para verificar a role
-        const payload = JSON.parse(atob(adminToken.split('.')[1]));
-        if (payload.role !== 'Admin') {
-            alert('Acesso negado: Você não tem privilégios de administrador.');
-            localStorage.removeItem('adminToken');
-            window.location.href = 'logintela.html';
-        } else {
-            carregarCarrinhos();
-            carregarChromebooks();
-            carregarReservas();
-        }
-    } catch (e) {
-        window.location.href = 'logintela.html';
-    }
+    carregarCarrinhos();
+    carregarChromebooks();
+    carregarReservas();
 }

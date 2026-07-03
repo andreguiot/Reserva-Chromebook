@@ -54,7 +54,15 @@ class AuthController {
             req.usuario = { email: usuario.email };
             await AuditoriaController.registrar(req, 'LOGIN_GOOGLE_SUCESSO', precisaDefinirSenha ? 'Primeiro acesso (pendente de senha)' : 'Login padrão');
 
-            return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome, precisaDefinirSenha });
+            // Define o Cookie HTTP-Only
+            res.cookie('auth_token', token, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'strict',
+                maxAge: 8 * 60 * 60 * 1000 // 8 horas (previne restauração infinita do navegador)
+            });
+
+            return res.json({ success: true, role: usuario.tipo_perfil, nome: usuario.nome, precisaDefinirSenha });
         } catch (error) {
             await AuditoriaController.registrar(req, 'LOGIN_GOOGLE_FALHA', error.message || 'Erro de validação');
             return res.status(500).json({ success: false, erro: 'Erro na validação do login com Google.' });
@@ -87,7 +95,14 @@ class AuthController {
             req.usuario = { email: usuario.email };
             await AuditoriaController.registrar(req, 'LOGIN_LOCAL_SUCESSO', 'Autenticação com e-mail e senha locais');
 
-            return res.json({ success: true, token, role: usuario.tipo_perfil, nome: usuario.nome });
+            res.cookie('auth_token', token, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'strict',
+                maxAge: 8 * 60 * 60 * 1000 // 8 horas
+            });
+
+            return res.json({ success: true, role: usuario.tipo_perfil, nome: usuario.nome });
         } catch (error) {
             await AuditoriaController.registrar(req, 'LOGIN_LOCAL_FALHA', error.message || 'Erro ao processar');
             return res.status(500).json({ success: false, erro: 'Erro ao processar as credenciais.' });
@@ -125,10 +140,26 @@ class AuthController {
 
             await AuditoriaController.registrar(req, 'DEFINICAO_SENHA_SUCESSO', 'Senha local cadastrada com sucesso');
 
-            return res.json({ success: true, token, role: req.usuario.role, nome: req.usuario.nome });
+            res.cookie('auth_token', token, { 
+                httpOnly: true, 
+                secure: process.env.NODE_ENV === 'production', 
+                sameSite: 'strict',
+                maxAge: 8 * 60 * 60 * 1000 // 8 horas
+            });
+
+            return res.json({ success: true, role: req.usuario.role, nome: req.usuario.nome });
         } catch (error) {
             await AuditoriaController.registrar(req, 'DEFINICAO_SENHA_FALHA', error.message || 'Erro genérico');
             return res.status(500).json({ success: false, erro: 'Erro ao salvar a senha.' });
+        }
+    }
+
+    async logout(req, res) {
+        try {
+            res.clearCookie('auth_token');
+            return res.json({ success: true, mensagem: 'Logout realizado com sucesso.' });
+        } catch (error) {
+            return res.status(500).json({ success: false, erro: 'Erro ao fazer logout.' });
         }
     }
 }
