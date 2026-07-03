@@ -80,6 +80,6 @@ sequelize.sync({ alter: true }).then(() => {
     console.error('Erro ao sincronizar banco de dados:', err.message);
 });
 
-app.listen(port, () => {
-    console.log(`Servidor rodando na porta ${port}`);
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Servidor rodando na porta ${port} e acessível na rede local (0.0.0.0)`);
 });
