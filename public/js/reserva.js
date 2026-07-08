@@ -9,10 +9,6 @@ function isLogado() {
     return sessionStorage.getItem('role') !== null;
 }
 
-if (!isLogado()) {
-    window.location.href = 'logintela.html';
-}
-
 // --- Carrinhos disponíveis ---
 
 async function carregarCarrinhosDisponiveis() {

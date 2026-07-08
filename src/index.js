@@ -12,7 +12,7 @@ if (missingVars.length > 0) {
     process.exit(1);
 }
 
-const express = require('express');
+
 const app = express();
 
 // Confiar no Proxy do Render para que o rate-limit leia o IP real do usuário corretamente
@@ -56,6 +56,27 @@ const authLimiter = rateLimit({
     max: 15,
     message: { erro: 'Muitas tentativas de login, tente novamente mais tarde.' }
 });
+
+
+const jwt = require('jsonwebtoken');
+
+app.use((req, res, next) => {
+    const protectedPages = ['/reserva.html', '/painel.html'];
+    if (protectedPages.includes(req.path.toLowerCase())) {
+        const token = req.cookies.auth_token;
+        if (!token) {
+            return res.redirect('/logintela.html');
+        }
+        try {
+            jwt.verify(token, process.env.JWT_SECRET);
+            return next();
+        } catch (e) {
+            return res.redirect('/logintela.html');
+        }
+    }
+    next();
+});
+
 
 app.use(express.static('public'));
 
