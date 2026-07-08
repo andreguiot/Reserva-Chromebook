@@ -53,6 +53,25 @@ const authLimiter = rateLimit({
     message: { erro: 'Muitas tentativas de login, tente novamente mais tarde.' }
 });
 
+const jwt = require('jsonwebtoken');
+
+app.use((req, res, next) => {
+    const protectedPages = ['/reserva.html', '/painel.html'];
+    if (protectedPages.includes(req.path.toLowerCase())) {
+        const token = req.cookies.auth_token;
+        if (!token) {
+            return res.redirect('/logintela.html');
+        }
+        try {
+            jwt.verify(token, process.env.JWT_SECRET);
+            return next();
+        } catch (e) {
+            return res.redirect('/logintela.html');
+        }
+    }
+    next();
+});
+
 app.use(express.static('public'));
 
 const { sequelize } = require('./models');
