@@ -67,20 +67,47 @@ class ReservaController {
                 return res.status(400).json({ erro: 'Não é possível realizar reservas para datas passadas.' });
             }
 
+            // --- Validação de Overbooking Global ---
+            const totalCb = await Chromebook.count();
+            const overlapping = await Reserva.findAll({
+                where: {
+                    data_reserva,
+                    status: { [Op.in]: ['pendente', 'ativa'] },
+                    horario_inicio: { [Op.lt]: horario_fim },
+                    horario_fim: { [Op.gt]: horario_inicio }
+                },
+                include: [{ model: Carrinho }]
+            });
+
+            let ocupados = 0;
+            for (const r of overlapping) {
+                if (r.tipo_reserva === 'carrinho' && r.Carrinho) {
+                    ocupados += r.Carrinho.capacidade_total;
+                } else if (r.tipo_reserva === 'individual') {
+                    ocupados += r.quantidade_chromebooks;
+                }
+            }
+
+            let solicitados = 0;
             if (tipo_reserva === 'carrinho' && id_carrinho) {
-                const conflito = await Reserva.findOne({
-                    where: {
-                        id_carrinho,
-                        data_reserva,
-                        status: { [Op.in]: ['pendente', 'ativa'] },
-                        horario_inicio: { [Op.lt]: horario_fim },
-                        horario_fim: { [Op.gt]: horario_inicio }
-                    }
-                });
+                const carrinho = await Carrinho.findByPk(id_carrinho);
+                if (!carrinho) return res.status(404).json({ erro: 'Carrinho não encontrado.' });
+                solicitados = carrinho.capacidade_total;
+                
+                // Validação de conflito específico do carrinho
+                const conflito = overlapping.find(r => r.id_carrinho == id_carrinho && r.tipo_reserva === 'carrinho');
                 if (conflito) {
                     return res.status(409).json({ erro: `Conflito de horário: este carrinho já está reservado das ${conflito.horario_inicio} às ${conflito.horario_fim}.` });
                 }
+            } else if (tipo_reserva === 'individual') {
+                solicitados = quantidade_chromebooks;
             }
+
+            const disponiveis = totalCb - ocupados;
+            if (solicitados > disponiveis) {
+                return res.status(409).json({ erro: `Inventário insuficiente. Apenas ${disponiveis} Chromebook(s) disponíveis nesse horário.` });
+            }
+            // ----------------------------------------
 
             const novaReserva = await Reserva.create({
                 tipo_reserva, id_carrinho, quantidade_chromebooks,
@@ -93,6 +120,7 @@ class ReservaController {
 
             return res.status(201).json(novaReserva);
         } catch (error) {
+            console.error('Erro ao criar reserva:', error);
             return res.status(500).json({ erro: 'Erro ao criar reserva' });
         }
     }
