@@ -104,7 +104,7 @@ class ReservaController {
             }
 
             const disponiveis = totalCb - ocupados;
-            if (solicitados > disponiveis) {
+            if (tipo_reserva === 'individual' && solicitados > disponiveis) {
                 return res.status(409).json({ erro: `Inventário insuficiente. Apenas ${disponiveis} Chromebook(s) disponíveis nesse horário.` });
             }
             // ----------------------------------------
