@@ -12,7 +12,7 @@ if (missingVars.length > 0) {
     process.exit(1);
 }
 
-
+const express = require('express');
 const app = express();
 
 // Confiar no Proxy do Render para que o rate-limit leia o IP real do usuário corretamente
