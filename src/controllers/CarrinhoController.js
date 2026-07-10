@@ -12,8 +12,9 @@ class CarrinhoController {
 
     async criar(req, res) {
         try {
-            const { descricao, capacidade_total } = req.body;
-            const novoCarrinho = await Carrinho.create({ descricao, capacidade_total });
+            const { descricao, capacidade_total, id_patrimonio } = req.body;
+            // Apenas os campos esperados são enviados para a criação (Prevenção de Mass Assignment)
+            const novoCarrinho = await Carrinho.create({ descricao, capacidade_total, id_patrimonio });
             return res.status(201).json(novoCarrinho);
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao criar carrinho' });
@@ -23,12 +24,13 @@ class CarrinhoController {
     async atualizar(req, res) {
         try {
             const { id } = req.params;
-            const { descricao, capacidade_total } = req.body;
+            const { descricao, capacidade_total, id_patrimonio } = req.body;
             
             const carrinho = await Carrinho.findByPk(id);
             if (!carrinho) return res.status(404).json({ erro: 'Carrinho não encontrado' });
 
-            await carrinho.update({ descricao, capacidade_total });
+            // Apenas os campos esperados são enviados para a atualização
+            await carrinho.update({ descricao, capacidade_total, id_patrimonio });
             return res.json(carrinho);
         } catch (error) {
             return res.status(500).json({ erro: 'Erro ao atualizar carrinho' });
