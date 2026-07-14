@@ -12,8 +12,7 @@
 <body>
     <header>
         <div class="logo-area">
-            <img src="images/logo-abel.png"
-                alt="Colégio La Salle Abel" class="logo-img">
+            <img src="images/logo-abel.png" alt="Colégio La Salle Abel" class="logo-img">
             <p>Sistema de Reservas</p>
         </div>
         <nav class="top-menu">
@@ -71,6 +70,7 @@
                     <form id="form-carrinho" class="form-card">
                         <input type="text" id="desc-carrinho" placeholder="Descrição (Ex: Carrinho A)" required>
                         <input type="number" id="cap-carrinho" placeholder="Capacidade Total" required>
+                        <input type="text" id="patrimonio-carrinho" placeholder="Nº Patrimônio do Carrinho" required>
                         <button type="submit" class="btn-yellow">Adicionar Carrinho</button>
                     </form>
                     <ul id="lista-carrinhos" class="lista-itens"></ul>
@@ -112,7 +112,9 @@
                         </tr>
                     </thead>
                     <tbody id="lista-auditoria">
-                        <tr><td colspan="5">Carregando logs...</td></tr>
+                        <tr>
+                            <td colspan="5">Carregando logs...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -132,7 +134,9 @@
                         </tr>
                     </thead>
                     <tbody id="lista-usuarios">
-                        <tr><td colspan="4">Carregando usuários...</td></tr>
+                        <tr>
+                            <td colspan="4">Carregando usuários...</td>
+                        </tr>
                     </tbody>
                 </table>
             </div>

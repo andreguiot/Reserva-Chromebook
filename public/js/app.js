@@ -25,7 +25,7 @@ function mudarAba(abaId, btnEl) {
 
         const secao = document.getElementById('aba-' + abaId);
         if (secao) secao.classList.add('active');
-        
+
         if (btnEl) btnEl.classList.add('active');
 
         if (abaId === 'auditoria') {
@@ -43,7 +43,7 @@ function mudarAba(abaId, btnEl) {
 // Vincula os cliques via JS para evitar problemas de CSP com onclick inline
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('[data-aba]').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function () {
             mudarAba(this.getAttribute('data-aba'), this);
         });
     });
@@ -85,7 +85,7 @@ async function carregarCarrinhos() {
     carrinhos.forEach(c => {
         // Item da lista
         const clone = clonar('tpl-carrinho-item');
-        clone.querySelector('.carrinho-descricao').textContent = `${c.descricao} (QTD: ${c.capacidade_total})`;
+        clone.querySelector('.carrinho-descricao').textContent = `${c.descricao} (QTD: ${c.capacidade_total}) - Pat: ${c.id_patrimonio || 'N/A'}`;
         const btnDel = clone.querySelector('.btn-del');
         btnDel.addEventListener('click', () => deletarCarrinho(c.id_carrinho));
         lista.appendChild(clone);
@@ -179,11 +179,12 @@ document.getElementById('form-carrinho').addEventListener('submit', async (e) =>
     e.preventDefault();
     const descricao = document.getElementById('desc-carrinho').value;
     const capacidade_total = document.getElementById('cap-carrinho').value;
+    const id_patrimonio = document.getElementById('patrimonio-carrinho').value;
 
     await fetch(`${API_URL}/carrinhos`, {
         method: 'POST',
         headers: getAuthHeaders(),
-        body: JSON.stringify({ descricao, capacidade_total })
+        body: JSON.stringify({ descricao, capacidade_total, id_patrimonio })
     });
 
     e.target.reset();
