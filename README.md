@@ -59,12 +59,13 @@ A aplicação é modular e segue o padrão **MVC (Model-View-Controller)** para 
 ## 🚀 Recursos Principais
 
 *   **Autenticação Híbrida Inteligente:** Permite login rápido via Google OAuth (com auto-cadastro automático para domínios permitidos) ou login tradicional com e-mail/senha.
-*   **Prevenção de Overbooking (Conflitos):** Ao tentar reservar um carrinho, o backend valida se já existe outra reserva ativa ou pendente para o mesmo carrinho no intervalo de tempo especificado.
+*   **Prevenção de Overbooking Global & Conflitos:** O backend valida se já existe conflito de horário para um carrinho e monitora o estoque total, bloqueando reservas individuais caso o número de dispositivos solicitados exceda o total de Chromebooks disponíveis na escola.
 *   **Scan de Patrimônio para Entrega:**
     *   *Para Carrinhos:* O administrador confirma a saída do carrinho validando o código de patrimônio.
     *   *Para Individuais:* O administrador escaneia Chromebook por Chromebook. Quando a quantidade escaneada atinge o solicitado, o status da reserva muda automaticamente para **Ativa**.
 *   **Alerta de Chromebook Deslocado:** Durante o escaneamento individual, se um Chromebook associado a um carrinho reservado por outro professor for escaneado, o sistema registra seu status como `deslocado` e notifica o administrador, impedindo desorganização de carrinhos.
 *   **Sincronização de Status (Atraso Automático):** Rotina automática que marca reservas como `atrasada` se o horário limite de devolução expirar.
+*   **Proteção de Páginas Estáticas:** O middleware bloqueia o acesso direto não autenticado a rotas de UI (como o painel de reservas) impedindo visualização prévia da tela.
 *   **Trilha de Auditoria Geral:** Cada login, cadastro de reserva, scan de dispositivo ou devolução gera um log detalhado no banco (`logs_auditoria`), salvando o IP do cliente, a ação realizada, o e-mail do autor e o timestamp exato.
 
 ---
@@ -140,10 +141,11 @@ erDiagram
 
 O projeto foi construído pensando nas melhores diretrizes de segurança de OWASP para APIs REST:
 *   **Fail-Safe de Variáveis de Ambiente:** No início da inicialização do `index.js`, um validador verifica se as variáveis críticas (`DATABASE_URL`, `GOOGLE_CLIENT_ID`, `JWT_SECRET`, `CORS_ORIGIN`) estão configuradas. Caso contrário, o servidor encerra a execução imediatamente com um erro detalhado para evitar brechas de segurança.
+*   **Prevenção contra Mass Assignment:** Operações sensíveis de criação e edição via `req.body` (ex: configurações de carrinhos) extraem estritamente apenas os atributos permitidos, rejeitando campos maliciosos.
 *   **Helmet CSP e HTTP Headers:** Proteção contra XSS, Clickjacking e outras vulnerabilidades usando cabeçalhos HTTP customizados e política de segurança de conteúdo (CSP) flexível para suportar o fluxo de autenticação do Google.
 *   **Cookies HTTP-Only & SameSite:** O token JWT de autenticação é gravado em um cookie inacessível pelo JavaScript do cliente, prevenindo roubos de sessão via ataques XSS.
-*   **Rate Limiting:** Limita requisições globais nas rotas da API (máximo de 150 por 15 minutos) e limita tentativas de login/autenticação (máximo de 15 por 15 minutos) contra ataques de força bruta.
-*   **Validação de Entrada:** Todas as entradas das rotas principais são validadas usando esquemas do **Zod**, rejeitando dados inválidos antes de atingirem a lógica de negócios ou o banco de dados.
+*   **Rate Limiting Avançado & Proxy Trust:** Limita requisições globais e tentativas de login para evitar ataques de força bruta, suportando `trust proxy` para bloquear corretamente o IP do cliente final em hosts PaaS (como o Render).
+*   **Validação de Entrada Estrita:** Todas as entradas das rotas principais são validadas usando esquemas do **Zod**, rejeitando dados inválidos (como requests de quantidade < 1) antes de atingirem a lógica de negócios.
 
 ---
 
