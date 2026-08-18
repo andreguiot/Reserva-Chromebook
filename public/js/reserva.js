@@ -9,13 +9,32 @@ function isLogado() {
     return sessionStorage.getItem('role') !== null;
 }
 
+document.addEventListener('DOMContentLoaded', () => {
+    const nomeUsuario = sessionStorage.getItem('nome') || 'Usuário';
+    const userNameDisplay = document.getElementById('user-name-display');
+    if (userNameDisplay) {
+        userNameDisplay.textContent = nomeUsuario;
+    }
+
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+        btnLogout.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try { await fetch('/api/auth/logout', { method: 'POST' }); } catch (err) {}
+            sessionStorage.removeItem('role');
+            sessionStorage.removeItem('nome');
+            window.location.href = 'logintela.html';
+        });
+    }
+});
+
 // --- Carrinhos disponíveis ---
 
 async function carregarCarrinhosDisponiveis() {
     const res = await fetch(`${API_URL}/carrinhos`, {
         headers: { 'Content-Type': 'application/json' }
     });
-    
+
     if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
             sessionStorage.removeItem('role');

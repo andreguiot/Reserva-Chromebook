@@ -10,12 +10,20 @@
 </head>
 
 <body>
-    <header>
+    <header style="position: relative;">
         <div class="logo-area">
             <img src="images/logo-abel.png" alt="Colégio La Salle Abel" class="logo-img">
             <p>Sistema de Reservas</p>
         </div>
-        <button type="button" id="btn-ver-tabela" class="link-admin">📅 Ver Tabela de Horários</button>
+        
+        <div class="header-center">
+            <button type="button" id="btn-ver-tabela" class="link-admin">📅 Ver Tabela de Horários</button>
+        </div>
+
+        <div class="header-actions">
+            <span class="user-info">Você está logado como: <b id="user-name-display"></b></span>
+            <a href="#" id="btn-logout" class="btn-sair-header">Sair</a>
+        </div>
     </header>
 
     <main class="reserva-container">
@@ -125,7 +133,7 @@
             </tr>
         </template>
 
-        <script src="js/reserva.js"></script>
+        <script src="js/reserva.js?v=4"></script>
 </body>
 
 </html>

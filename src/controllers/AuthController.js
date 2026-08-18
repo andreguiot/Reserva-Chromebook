@@ -33,12 +33,16 @@ class AuthController {
             let usuario = await Usuario.findOne({ where: { email } });
             
             if (!usuario) {
+                // Se for o primeiro usuário do sistema, ganha privilégios de Admin
+                const totalUsuarios = await Usuario.count();
+                const perfilInicial = (totalUsuarios === 0) ? 'Admin' : 'Comum';
+
                 // Auto-cadastro para novos professores/funcionários
                 usuario = await Usuario.create({
                     nome,
                     email,
                     senha: null, // Sem senha local
-                    tipo_perfil: 'Comum' // Perfil padrão inicial
+                    tipo_perfil: perfilInicial
                 });
             }
 

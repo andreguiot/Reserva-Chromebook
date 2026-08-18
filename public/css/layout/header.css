@@ -1,5 +1,6 @@
 /* O Header precisa ser azul primário para a logo branca aparecer */
 header {
+    position: relative;
     background-color: var(--color-primary);
     color: #FFFFFF;
     padding: calc(var(--base-unit) * 4) calc(var(--base-unit) * 8);
@@ -31,6 +32,7 @@ header {
 .top-menu {
     display: flex;
     gap: calc(var(--base-unit) * 4);
+    align-items: center;
 }
 
 .tab-btn {
@@ -55,43 +57,73 @@ header {
     border-bottom: 2px solid var(--color-secondary);
 }
 
-@media (max-width: 768px) {
-    header {
-        flex-direction: column;
-        gap: calc(var(--base-unit) * 4);
-    }
-    
-    .top-menu {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: calc(var(--base-unit) * 2);
-    }
+.link-admin {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: calc(var(--base-unit) * 2) calc(var(--base-unit) * 4);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
 }
 
-@media (max-width: 600px) {
-    header {
-        padding: calc(var(--base-unit) * 4);
-    }
+.link-admin:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: #FFFFFF;
+}
 
-    .top-menu {
-        flex-direction: column;
-        width: 100%;
-        align-items: stretch;
-        gap: 8px;
-    }
+.btn-ver-site {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+}
 
-    .tab-btn {
-        width: 100%;
-        text-align: center;
-        padding: 12px;
-        background-color: rgba(255, 255, 255, 0.05);
-        border-radius: 6px;
-        border-bottom: none;
-    }
+.btn-sair {
+    color: #ffcccc;
+    border-bottom: none !important;
+}
 
-    .tab-btn.active {
-        background-color: var(--color-secondary);
-        color: white;
-        border-bottom: none;
-    }
+.btn-sair:hover {
+    color: #ff9999;
+}
+
+/* User Info no Cabeçalho */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-info {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+}
+
+.user-info b {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.btn-sair-header {
+    color: #ffcccc;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 6px 12px;
+    border: 1px solid #ffcccc;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.btn-sair-header:hover {
+    background-color: #ffcccc;
+    color: var(--color-primary);
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
